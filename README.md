@@ -1,6 +1,9 @@
 # socialapphackintine
 
 A Precisely Flutter application.
+![Image description](https://github.com/JapneetSingh28/Social-App/blob/master/UI/All%20Screens%20UI.jpeg)
+
+more ui is updating by tomorrow
 
 ## Task To Be Done
 Build a social platform for Precisely’s users

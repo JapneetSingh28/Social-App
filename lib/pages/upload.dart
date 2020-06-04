@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,11 +25,13 @@ class Upload extends StatefulWidget {
 
 class _UploadState extends State<Upload>
     with AutomaticKeepAliveClientMixin<Upload> {
+  List<String> hashTags = [];
   TextEditingController captionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   File file;
   bool isUploading = false;
   String postId = Uuid().v4();
+  Future<QuerySnapshot> searchResultsHashTagsFuture;
 
   handleTakePhoto() async {
     Navigator.pop(context);
@@ -143,7 +146,46 @@ class _UploadState extends State<Upload>
     });
   }
 
+  handleSearchHashTagsInPosts(String query) {
+    Future<QuerySnapshot> hashTags =
+    hashTagsRef.where("hashName", isEqualTo: query).getDocuments();
+    setState(() {
+      searchResultsHashTagsFuture = hashTags;
+    });
+  }
+
+  createPostWithHashTagsInFirestore(
+      {String mediaUrl, String location, String description}) {
+    hashTags.forEach((hash) {
+      hashTagsRef.document(postId).setData({
+        "hashName": hash,
+        "postDetails": [{
+          "postId": postId,
+          "ownerId": widget.currentUser.id,
+          "username": widget.currentUser.username,
+          "mediaUrl": mediaUrl,
+          "description": description,
+          "location": location,
+          "timestamp": timestamp,
+          "likes": {}
+        }],
+        "timestamp": timestamp,
+        "followers": [],
+      });
+    });
+  }
+
   handleSubmit() async {
+    String strList = captionController.text;
+    List strg = strList.split(' ');
+    strg.forEach((f) {
+      bool hash = f.startsWith('#');
+      if (hash) {
+        f.replaceAll('#', '');
+        hashTags.add(f.toString().substring(1));
+      }
+      print(hashTags);
+    });
     setState(() {
       isUploading = true;
     });
@@ -154,6 +196,7 @@ class _UploadState extends State<Upload>
       location: locationController.text,
       description: captionController.text,
     );
+    createPostWithHashTagsInFirestore();
     captionController.clear();
     locationController.clear();
     setState(() {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,10 +16,12 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 final StorageReference storageRef = FirebaseStorage.instance.ref();
 final usersRef = Firestore.instance.collection('users');
 final postsRef = Firestore.instance.collection('posts');
+final hashTagsRef = Firestore.instance.collection('hashtags');
 final commentsRef = Firestore.instance.collection('comments');
 final activityFeedRef = Firestore.instance.collection('feed');
 final followersRef = Firestore.instance.collection('followers');
 final followingRef = Firestore.instance.collection('following');
+final timelineRef = Firestore.instance.collection('timeline');
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
@@ -28,6 +31,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool isWaiting = false ;
   bool isAuth = false;
   PageController pageController;
   int pageIndex = 0;
@@ -50,9 +54,9 @@ class _HomeState extends State<Home> {
     });
   }
 
-  handleSignIn(GoogleSignInAccount account) {
+  handleSignIn(GoogleSignInAccount account) async {
     if (account != null) {
-      createUserInFirestore();
+      await createUserInFirestore();
       setState(() {
         isAuth = true;
       });
@@ -122,11 +126,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          // Timeline(),
-          RaisedButton(
-            child: Text('Logout'),
-            onPressed: logout,
-          ),
+          Timeline(currentUser: currentUser),
           ActivityFeed(),
           Upload(currentUser: currentUser),
           Search(),
@@ -185,7 +185,7 @@ class _HomeState extends State<Home> {
                 color: Colors.white,
               ),
             ),
-            GestureDetector(
+            isWaiting ? GestureDetector(
               onTap: login,
               child: Container(
                 width: 260.0,
@@ -200,6 +200,23 @@ class _HomeState extends State<Home> {
                 ),
               ),
             )
+              : Text(""),
+            FlatButton(
+              child:Text("Developer Signin") ,
+                onPressed: (){
+                  currentUser = User(
+                    id:'102559740660975769254',
+                    email: 'tempm7338@gmail.com',
+                    username: 'Jaskaran',
+                    photoUrl: ' https://lh3.googleusercontent.com/-2ZqfKtoAME4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmTcfz1_oMIBZyhbPQkcUDZWwIluA/s96-c/photo.jpg',
+                    displayName: 'Temp Mail',
+                    bio: '',
+                  );
+                  setState(() {
+                    isAuth=true;
+                  });
+                },
+            ),
           ],
         ),
       ),
@@ -208,6 +225,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    Timer(Duration(seconds: 2), (){
+      setState(() {
+          isWaiting=true;
+          });
+      });
     return isAuth ? buildAuthScreen() : buildUnAuthScreen();
   }
 }

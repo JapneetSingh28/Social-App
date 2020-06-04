@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:social_networking/models/user.dart';
 import 'package:social_networking/pages/activity_feed.dart';
 import 'package:social_networking/pages/home.dart';
+import 'package:social_networking/pages/post_screen.dart';
+import 'package:social_networking/widgets/post.dart';
 import 'package:social_networking/widgets/progress.dart';
 
 class Search extends StatefulWidget {
@@ -12,9 +14,49 @@ class Search extends StatefulWidget {
   _SearchState createState() => _SearchState();
 }
 
-class _SearchState extends State<Search> {
+class _SearchState extends State<Search>
+//    with AutomaticKeepAliveClientMixin<Search>
+{
+  List hashTagsSearched = [];
+  bool isHashSearch = false;
+  bool isEmpty=true;
   TextEditingController searchController = TextEditingController();
   Future<QuerySnapshot> searchResultsFuture;
+  Future<QuerySnapshot> searchResultsHashTagsFuture;
+
+  searchOrHash() {
+    String strList = searchController.text;
+    List strg = strList.split(' ');
+    if (strList.isEmpty || strList==null){
+     setState(() {
+       isEmpty=true;
+     });
+    }
+    strg.forEach((f) {
+      bool hash = f.startsWith('#');
+      if (hash) {
+        hashTagsSearched.add(f.toString().substring(1));
+        hashTagsSearched.forEach((h) {
+          handleSearchHashTags(f);
+        });
+        setState(() {
+          isEmpty=false;
+          isHashSearch = true;
+        });
+
+      } else if(f.toString().isNotEmpty) {
+        handleSearch(f);
+        setState(() {
+          isEmpty=false;
+          isHashSearch = false;
+        });
+      }else{
+        setState(() {
+          isEmpty=true;
+        });
+      }
+    });
+  }
 
   handleSearch(String query) {
     Future<QuerySnapshot> users = usersRef
@@ -25,7 +67,18 @@ class _SearchState extends State<Search> {
     });
   }
 
+  handleSearchHashTags(String query) {
+    Future<QuerySnapshot> hashTags =
+        hashTagsRef.where("hashTags", arrayContains: query).getDocuments();
+    setState(() {
+      searchResultsHashTagsFuture = hashTags;
+    });
+  }
+
   clearSearch() {
+    setState(() {
+      isEmpty=true;
+    });
     searchController.clear();
   }
 
@@ -46,7 +99,7 @@ class _SearchState extends State<Search> {
             onPressed: clearSearch,
           ),
         ),
-        onFieldSubmitted: handleSearch,
+        onFieldSubmitted: searchOrHash(),
       ),
     );
   }
@@ -98,13 +151,58 @@ class _SearchState extends State<Search> {
     );
   }
 
+  buildHashTagsSearchResults() {
+//    return FutureBuilder(
+//      future: searchResultsHashTagsFuture,
+//      builder: (context, snapshot) {
+//        if (snapshot.hasData) {
+//          return circularProgress();
+//        }
+//        List<Post> searchHashTagsResults = [];
+//        snapshot.data.documents.forEach((doc) {
+//          print(doc);
+//
+////           searchHashTagsResults = Post.fromDocument(doc)).toList();
+//        });
+////        return ListView(
+////          children: searchHashTagsResults,
+////        );
+//      return Container(
+//        child: Text("Hashtags"),
+//      );
+//      },
+//    );
+  return  FutureBuilder(
+      future: searchResultsHashTagsFuture,
+      builder: (BuildContext context,snapshot){
+        if(!snapshot.hasData)
+          print( snapshot.data.toString());
+        else
+          print(snapshot);
+        return Container(child: Text("Hashags"));
+      }
+  );
+//    return Container(child: Text("Hash"),);
+  }
+
+//  bool get wantKeepAlive => true;
+@override
+  void dispose() {
+    isEmpty=true;
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+//    super.build(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
       appBar: buildSearchField(),
-      body:
-          searchResultsFuture == null ? buildNoContent() : buildSearchResults(),
+//      body: buildHashTagsSearchResults(),
+//        (searchResultsHashTagsFuture == null || searchResultsFuture == null) ||
+      body:  isEmpty
+          ? buildNoContent()
+          : isHashSearch ? buildHashTagsSearchResults : buildSearchResults(),
     );
   }
 }
@@ -147,3 +245,16 @@ class UserResult extends StatelessWidget {
     );
   }
 }
+
+class PostsResults extends StatelessWidget {
+  final postId;
+  final userId;
+  
+  PostsResults(this.postId,this.userId);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(child: Text("Hello"),);
+  }
+}
+

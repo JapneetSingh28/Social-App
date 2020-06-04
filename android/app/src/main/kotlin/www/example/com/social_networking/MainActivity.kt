@@ -1,4 +1,4 @@
-package www.example.com.socialapphackintine
+package www.example.com.social_networking
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

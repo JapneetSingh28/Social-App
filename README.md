@@ -3,7 +3,8 @@
 A Precisely Flutter application.
 ![Image description](https://github.com/JapneetSingh28/Social-App/blob/master/UI/All%20Screens%20UI.jpeg)
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/Ndl_5JHqVBw)
+# UI DEMO VIDEO
+[![UI DEMO VIDEO](https://user-images.githubusercontent.com/34857581/83809842-c369f480-a6d4-11ea-971c-1343b526c322.png)](https://youtu.be/Ndl_5JHqVBw)
 
 
 

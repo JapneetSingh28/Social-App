@@ -3,20 +3,22 @@
 A Precisely Flutter application.
 ![Image description](https://github.com/JapneetSingh28/Social-App/blob/master/UI/All%20Screens%20UI.jpeg)
 
-More UI will be updated by tomorrow.
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/Ndl_5JHqVBw)
+
+
 
 ## Task To Be Done
 Build a social platform for Precisely’s users
-- Users can post short video or text stories (like Instagram)[10 points ]
-- Users can follow tags (example: MIT, Harvard, psychology, etc.) or other users[6 points ]
-- Stories automatically get stored as posts and can be seen later at any time by followers. [6 points ]
-- Users can add tags to their stories[6 points ]
-- Users can like or comment posts[10 points ]
-- Users can search posts by tags[10 points ]
-- Users can see other users’ profiles and all their previous posts[10 points ]
-- Recommend more tags or people to follow based on users’ existing preferences and followings[20 points ]
+- [x] Users can post short video or text stories (like Instagram)[10 points ]
+- [ ] Users can follow tags (example: MIT, Harvard, psychology, etc.) or other users[6 points ](almost done)
+- [x] Stories automatically get stored as posts and can be seen later at any time by followers. [6 points ]
+- [x] Users can add tags to their stories[6 points ]
+- [x] Users can like or comment posts[10 points ]
+- [ ] Users can search posts by tags[10 points ](almost done)
+- [x] Users can see other users’ profiles and all their previous posts[10 points ]
+- [x] Recommend more tags or people to follow based on users’ existing preferences and followings[20 points ]
 ### - Impress us with some more innovative and exciting features not included above[30 points]
-### Innovative 
+### Innovative (work for this two days) 
 
 Innovative idea 
 - 1. User can upload there resume , update there profile like about ,skills , endorsement , test , video demo interview,Jobs company can updates there requirements .

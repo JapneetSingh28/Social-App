@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:social_networking/models/user.dart';
+import 'package:social_networking/pages/StoryArchives.dart';
 import 'package:social_networking/pages/edit_profile.dart';
 import 'package:social_networking/pages/home.dart';
 import 'package:social_networking/widgets/header.dart';
@@ -385,9 +386,47 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Drawer buildDrawer() {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => storyArchives(profileId: widget.profileId,)
+              ));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Story Archives",
+                style: TextStyle(fontSize: 15.0),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: buildDrawer(),
       appBar: header(context, titleText: "Profile"),
       body: ListView(
         children: <Widget>[

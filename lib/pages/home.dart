@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+//import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:social_networking/models/user.dart';
 import 'package:social_networking/pages/activity_feed.dart';
 import 'package:social_networking/pages/create_account.dart';
@@ -24,7 +26,11 @@ final followingRef = Firestore.instance.collection('following');
 final timelineRef = Firestore.instance.collection('timeline');
 final DateTime timestamp = DateTime.now();
 User currentUser;
-
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+String email;
+String password;
+bool _autoValidate = false;
+bool obscureyext=true;
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -127,9 +133,9 @@ class _HomeState extends State<Home> {
       body: PageView(
         children: <Widget>[
           Timeline(currentUser: currentUser),
-          ActivityFeed(),
-          Upload(currentUser: currentUser),
           Search(),
+          Upload(currentUser: currentUser),
+          ActivityFeed(),
           Profile(profileId: currentUser?.id),
         ],
         controller: pageController,
@@ -141,16 +147,17 @@ class _HomeState extends State<Home> {
           onTap: onTap,
           activeColor: Theme.of(context).primaryColor,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.whatshot)),
-            BottomNavigationBarItem(icon: Icon(Icons.notifications_active)),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom1.png")),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom2.png")),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.photo_camera,
-                size: 35.0,
+              icon:  Icon(
+                Icons.add_circle,
+                size: 45.0,
+                color: Color(0xff6D00D9),
               ),
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.search)),
-            BottomNavigationBarItem(icon: Icon(Icons.account_circle)),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom3.png")),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom4.png")),
           ]),
     );
     // return RaisedButton(
@@ -158,52 +165,75 @@ class _HomeState extends State<Home> {
     //   onPressed: logout,
     // );
   }
-
-  Scaffold buildUnAuthScreen() {
+  Scaffold buildUnAuthScreen(){
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Theme.of(context).accentColor,
-              Theme.of(context).primaryColor,
-            ],
-          ),
-        ),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: ListView(
           children: <Widget>[
-            Text(
-              'FlutterShare',
-              style: TextStyle(
-                fontFamily: "Signatra",
-                fontSize: 90.0,
-                color: Colors.white,
-              ),
+            Padding(
+              padding: const EdgeInsets.only(top:30.0),
+              child: Image.asset("assets/images/precisely_logo.png",
+              height: 80.89,
+              width: 80.94,),
             ),
-            isWaiting ? GestureDetector(
-              onTap: login,
-              child: Container(
-                width: 260.0,
-                height: 60.0,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      'assets/images/google_signin_button.png',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            )
-              : Text(""),
-            FlatButton(
-              child:Text("Developer Signin") ,
-                onPressed: (){
+            Padding(
+              padding: const EdgeInsets.only(top:14.0),
+              child: Image.asset("assets/images/component.png",
+              height: 30.0,
+              width: 100.0,),
+            ),
+           Container(
+             child: Column(
+               mainAxisAlignment: MainAxisAlignment.start,
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: <Widget>[
+                 Padding(
+                   padding: const EdgeInsets.only(top:50.0,left: 30.0),
+                   child: Text("Login",
+                     style: TextStyle(
+                       fontSize: 24.0,
+                       fontWeight: FontWeight.bold,
+                     fontFamily: "karla"),),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.only(top:30.0,left: 30.0),
+                   child: Text("Email",
+                     style: TextStyle(
+                         fontFamily:"karla",
+                     fontSize: 16.0,),),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.only(left:30.0,right: 30.0),
+                   child: TextField(
+                     decoration: InputDecoration(
+                       hintText: "anon@example.com",
+                       hintStyle: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xffBDBDBD)),
+                     ),
+                   ),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.only(top:20.0,left: 30.0),
+                   child: Text("Password",
+                     style: TextStyle(
+                         fontFamily:"karla",
+                         fontSize: 16.0),),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.only(left:30.0,right: 30.0),
+                   child: TextField(
+                     decoration: InputDecoration(
+                         hintText: "•••••••••••••",
+                         hintStyle: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xffBDBDBD)),
+                     ),
+                   ),
+                 )
+               ],
+             ),
+           ),
+            Padding(
+              padding: const EdgeInsets.only(top:30.0,left: 100.0,right: 100.0),
+              child: InkWell(
+                onTap: (){
                   currentUser = User(
                     id:'102559740660975769254',
                     email: 'tempm7338@gmail.com',
@@ -216,12 +246,170 @@ class _HomeState extends State<Home> {
                     isAuth=true;
                   });
                 },
+                child: Container(
+                  height: 36.0,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.0),
+                      color: Color(0xff6D00D9)
+                  ),
+                  child: Center(child: Text("Login",
+                    style: TextStyle(color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.0,
+                    fontFamily: "karla"),)),
+                ),
+              ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text("Forgot password?",
+                style: TextStyle(
+                  color: Color(0xff6D00D9),
+                  fontSize: 14.0,
+                  fontFamily: "karla",
+                  decoration: TextDecoration.underline
+                ),),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text("or connect with",
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: "karla",
+                  ),),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: InkWell(
+                      onTap: () {
+                        currentUser = User(
+                          id:'102559740660975769254',
+                          email: 'tempm7338@gmail.com',
+                          username: 'Jaskaran',
+                          photoUrl: ' https://lh3.googleusercontent.com/-2ZqfKtoAME4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmTcfz1_oMIBZyhbPQkcUDZWwIluA/s96-c/photo.jpg',
+                          displayName: 'Temp Mail',
+                          bio: '',
+                        );
+                        setState(() {
+                          isAuth=true;
+                        });
+                      },
+                      child: Container(
+                        height: 46.0,
+                        width: 46.0,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            image: DecorationImage(image: AssetImage(
+                                "assets/images/linkedin.png"),
+                                fit: BoxFit.scaleDown),
+                          border: Border.all(color: Color(0xff6D00D9),width: 1.0)
+                          //borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: InkWell(
+                      onTap: () {
+                        login();
+                      },
+                      child: Container(
+                        height: 46.0,
+                        width: 46.0,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            image: DecorationImage(image: AssetImage(
+                                "assets/images/google.png"),
+                                fit: BoxFit.scaleDown),
+                          border: Border.all(color: Color(0xff6D00D9),width: 1.0)
+                          //borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
     );
   }
+//  Scaffold buildUnAuthScreen() {
+//    return Scaffold(
+//      body: Container(
+//        decoration: BoxDecoration(
+//          gradient: LinearGradient(
+//            begin: Alignment.topRight,
+//            end: Alignment.bottomLeft,
+//            colors: [
+//              Theme.of(context).accentColor,
+//              Theme.of(context).primaryColor,
+//            ],
+//          ),
+//        ),
+//        alignment: Alignment.center,
+//        child: Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          crossAxisAlignment: CrossAxisAlignment.center,
+//          children: <Widget>[
+//            Text(
+//              'FlutterShare',
+//              style: TextStyle(
+//                fontFamily: "Signatra",
+//                fontSize: 90.0,
+//                color: Colors.white,
+//              ),
+//            ),
+//            isWaiting ? GestureDetector(
+//              onTap: login,
+//              child: Container(
+//                width: 260.0,
+//                height: 60.0,
+//                decoration: BoxDecoration(
+//                  image: DecorationImage(
+//                    image: AssetImage(
+//                      'assets/images/google_signin_button.png',
+//                    ),
+//                    fit: BoxFit.cover,
+//                  ),
+//                ),
+//              ),
+//            )
+//              : Text(""),
+//            FlatButton(
+//              child:Text("Developer Signin") ,
+//                onPressed: (){
+//                  currentUser = User(
+//                    id:'102559740660975769254',
+//                    email: 'tempm7338@gmail.com',
+//                    username: 'Jaskaran',
+//                    photoUrl: ' https://lh3.googleusercontent.com/-2ZqfKtoAME4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmTcfz1_oMIBZyhbPQkcUDZWwIluA/s96-c/photo.jpg',
+//                    displayName: 'Temp Mail',
+//                    bio: '',
+//                  );
+//                  setState(() {
+//                    isAuth=true;
+//                  });
+//                },
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
 
   @override
   Widget build(BuildContext context) {

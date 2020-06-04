@@ -32,8 +32,11 @@ class _ActivityFeedState extends State<ActivityFeed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange,
-      appBar: header(context, titleText: "Activity Feed"),
+      appBar: AppBar(
+        title: Image.asset("assets/images/precisely_logo.png",height: 40.0,width: 40.0,),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+      ),
       body: Container(
           child: FutureBuilder(
         future: getActivityFeed(),
@@ -138,38 +141,46 @@ class ActivityFeedItem extends StatelessWidget {
     configureMediaPreview(context);
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 2.0),
+      padding: EdgeInsets.all(10.0),
       child: Container(
         color: Colors.white54,
-        child: ListTile(
-          title: GestureDetector(
-            onTap: () => showProfile(context, profileId: userId),
-            child: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: username,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+        child: Card(
+          elevation: 4.5,
+          color: Colors.grey.shade200,
+          child: ListTile(
+            title: GestureDetector(
+              onTap: () => showProfile(context, profileId: userId),
+              child: RichText(
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontFamily: "karla",
+                      color: Colors.black,
                     ),
-                    TextSpan(
-                      text: ' $activityItemText',
-                    ),
-                  ]),
+                    children: [
+                      TextSpan(
+                        text: username,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                        color: Color(0xff6D00D9)),
+                      ),
+                      TextSpan(
+                        text: ' $activityItemText',
+                      ),
+                    ]),
+              ),
             ),
+            leading: CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(userProfileImg),
+            ),
+            subtitle: Text(
+              timeago.format(timestamp.toDate()),
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontFamily: "karla"),
+            ),
+            trailing: mediaPreview,
           ),
-          leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userProfileImg),
-          ),
-          subtitle: Text(
-            timeago.format(timestamp.toDate()),
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: mediaPreview,
         ),
       ),
     );

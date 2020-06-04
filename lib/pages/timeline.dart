@@ -4,12 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_networking/models/user.dart';
 import 'package:social_networking/pages/home.dart';
+import 'package:social_networking/pages/job_listing.dart';
 import 'package:social_networking/pages/search.dart';
+import 'package:social_networking/pages/view_profile.dart';
+
 import 'package:social_networking/pages/story.dart';
 import 'package:social_networking/widgets/avator.dart';
 import 'package:social_networking/widgets/header.dart';
 import 'package:social_networking/widgets/post.dart';
 import 'package:social_networking/widgets/progress.dart';
+
+import 'msgpage.dart';
 
 final usersRef = Firestore.instance.collection('users');
 
@@ -76,7 +81,7 @@ class _TimelineState extends State<Timeline> {
   buildTimeline() {
     if (posts == null) {
       return circularProgress();
-    } else if (posts.isEmpty) {
+    } else if (posts?.isEmpty) {
       return buildUsersToFollow();
     } else {
       return Container(
@@ -114,7 +119,7 @@ class _TimelineState extends State<Timeline> {
                           ),
                           Text(
                             currentUser.displayName,
-                            style: TextStyle(fontSize: 10),
+                            style: TextStyle(fontSize: 10,fontFamily: "karla"),
                           ),
                         ],
                       ),
@@ -303,9 +308,159 @@ class _TimelineState extends State<Timeline> {
   @override
   Widget build(context) {
     return Scaffold(
-        appBar: header(context, isAppTitle: true),
-        body: RefreshIndicator(
-            onRefresh: () => getTimeline(),
-            child: buildTimeline()));
+
+//      appBar: header1(context, isAppTitle: true,),
+      appBar: AppBar(
+        title: Image.asset("assets/images/precisely_logo.png",height: 40.0,width: 40.0,),
+        iconTheme: new IconThemeData(color: Color(0xff8B8B8B)),
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      actions: <Widget>[
+        IconButton(icon: Icon(Icons.search,size: 35.0,), onPressed: (){}),
+        IconButton(icon: Image.asset("assets/images/msgicon.png"),onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
+            return MessagePage();
+          }));
+        },)
+      ],),
+
+      body: RefreshIndicator(
+        onRefresh: () => getTimeline(),
+        child: buildTimeline(),
+      ),
+      drawer: buildDrawer(),
+    );
+  }
+
+  Drawer buildDrawer() {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  child: Text("A"),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Column(
+                  children: <Widget>[
+                    Text(
+                      "Abhishek Avi",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "450 Connections",
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context)
+                    .push(new MaterialPageRoute(builder: (_){
+                      return ViewProfile();
+                    }));
+              },
+              child: Text(
+                "View Profile",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontSize: 16.0),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              "Settings & Privacy",
+              style: TextStyle(fontSize: 15.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              "Groups",
+              style: TextStyle(fontSize: 15.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              "Events",
+              style: TextStyle(fontSize: 15.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 40.0),
+            child: Text(
+              "+ Add event",
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor, fontSize: 15.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              "Hashtags",
+              style: TextStyle(fontSize: 15.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 40.0),
+            child: Text(
+              "#india",
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor, fontSize: 15.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              "Terms & Conditions",
+              style: TextStyle(fontSize: 15.0),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

@@ -49,7 +49,7 @@ class _TimelineState extends State<Timeline> {
         .orderBy('timestamp', descending: true)
         .getDocuments();
     List<Post> posts =
-        snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
+    snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
     setState(() {
       this.posts = posts;
     });
@@ -62,7 +62,7 @@ class _TimelineState extends State<Timeline> {
         .orderBy('timestamp', descending: true)
         .getDocuments();
     List<AvatarData> avatar =
-        snapshot.documents.map((doc) => AvatarData.fromDocument(doc)).toList();
+    snapshot.documents.map((doc) => AvatarData.fromDocument(doc)).toList();
     setState(() {
       this.avatar = avatar;
     });
@@ -86,62 +86,62 @@ class _TimelineState extends State<Timeline> {
     } else {
       return Container(
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Container(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
 //                height: 75,
 //                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Status(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Status(
                                       profileId: currentUser.id,
                                       currentUser: currentUser,
                                     )));
-                      },
-                      child: Column(
-                        children: <Widget>[
-                          CircleAvatar(
-                            backgroundImage: CachedNetworkImageProvider(
-                                currentUser.photoUrl),
-                            backgroundColor: Colors.grey,
-                            radius: 30,
+                          },
+                          child: Column(
+                            children: <Widget>[
+                              CircleAvatar(
+                                backgroundImage: CachedNetworkImageProvider(
+                                    currentUser.photoUrl),
+                                backgroundColor: Colors.grey,
+                                radius: 30,
+                              ),
+                              Text(
+                                currentUser.displayName,
+                                style: TextStyle(fontSize: 10,fontFamily: "karla"),
+                              ),
+                            ],
                           ),
-                          Text(
-                            currentUser.displayName,
-                            style: TextStyle(fontSize: 10,fontFamily: "karla"),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Row(
+                          children: avatar,
+                        )
+                      ],
                     ),
-                    Row(
-                      children: avatar,
-                    )
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Divider(),
-          Expanded(
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: ListView(children: posts),
-            ),
-          ),
-        ],
-      ));
+              Divider(height: 10,),
+              Expanded(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView(children: posts),
+                ),
+              ),
+            ],
+          ));
     }
   }
 
@@ -250,7 +250,7 @@ class _TimelineState extends State<Timeline> {
   buildUsersToFollow() {
     return StreamBuilder(
       stream:
-          usersRef.orderBy('timestamp', descending: true).limit(30).snapshots(),
+      usersRef.orderBy('timestamp', descending: true).limit(30).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return circularProgress();
@@ -313,16 +313,16 @@ class _TimelineState extends State<Timeline> {
       appBar: AppBar(
         title: Image.asset("assets/images/precisely_logo.png",height: 40.0,width: 40.0,),
         iconTheme: new IconThemeData(color: Color(0xff8B8B8B)),
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      actions: <Widget>[
-        IconButton(icon: Icon(Icons.search,size: 35.0,), onPressed: (){}),
-        IconButton(icon: Image.asset("assets/images/msgicon.png"),onPressed: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
-            return MessagePage();
-          }));
-        },)
-      ],),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search,size: 35.0,), onPressed: (){}),
+          IconButton(icon: Image.asset("assets/images/msgicon.png"),onPressed: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
+              return MessagePage();
+            }));
+          },)
+        ],),
 
       body: RefreshIndicator(
         onRefresh: () => getTimeline(),
@@ -351,7 +351,7 @@ class _TimelineState extends State<Timeline> {
                     Text(
                       "Abhishek Avi",
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       "450 Connections",
@@ -368,8 +368,8 @@ class _TimelineState extends State<Timeline> {
               onTap: () {
                 Navigator.of(context)
                     .push(new MaterialPageRoute(builder: (_){
-                      return ViewProfile();
-                    }));
+                  return ViewProfile();
+                }));
               },
               child: Text(
                 "View Profile",

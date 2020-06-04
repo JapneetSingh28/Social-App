@@ -10,6 +10,7 @@ import 'package:social_networking/pages/comments.dart';
 import 'package:social_networking/pages/home.dart';
 import 'package:social_networking/widgets/custom_image.dart';
 import 'package:social_networking/widgets/progress.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class Post extends StatefulWidget {
   final String postId;
@@ -19,6 +20,7 @@ class Post extends StatefulWidget {
   final String description;
   final String mediaUrl;
   final dynamic likes;
+  final Timestamp timestamp;
 
   Post({
     this.postId,
@@ -28,6 +30,7 @@ class Post extends StatefulWidget {
     this.description,
     this.mediaUrl,
     this.likes,
+    this.timestamp,
   });
 
   factory Post.fromDocument(DocumentSnapshot doc) {
@@ -39,6 +42,7 @@ class Post extends StatefulWidget {
       description: doc['description'],
       mediaUrl: doc['mediaUrl'],
       likes: doc['likes'],
+      timestamp: doc['timestamp'],
     );
   }
 
@@ -67,6 +71,7 @@ class Post extends StatefulWidget {
         mediaUrl: this.mediaUrl,
         likes: this.likes,
         likeCount: getLikeCount(this.likes),
+        timestamp: this.timestamp,
       );
 }
 
@@ -78,6 +83,7 @@ class _PostState extends State<Post> {
   final String location;
   final String description;
   final String mediaUrl;
+  final Timestamp timestamp;
   bool showHeart = false;
   bool isLiked;
   int likeCount;
@@ -92,6 +98,7 @@ class _PostState extends State<Post> {
     this.mediaUrl,
     this.likes,
     this.likeCount,
+    this.timestamp,
   });
 
   buildPostHeader() {
@@ -111,7 +118,8 @@ class _PostState extends State<Post> {
           title: GestureDetector(
             onTap: () => showProfile(context, profileId: user.id),
             child: Text(
-              user.username,
+              user.username[0].toUpperCase() +
+                  user.username.substring(1).toLowerCase(),
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -124,7 +132,11 @@ class _PostState extends State<Post> {
                   onPressed: () => handleDeletePost(context),
                   icon: Icon(Icons.more_vert),
                 )
-              : Text(''),
+              : Text(
+                  timeago.format(timestamp.toDate()),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontFamily: "karla"),
+                ),
         );
       },
     );
@@ -267,10 +279,29 @@ class _PostState extends State<Post> {
   buildPostImage() {
     return GestureDetector(
       onDoubleTap: handleLikePost,
-      child: Stack(
-        alignment: Alignment.center,
+      child: Column(
+//        alignment: Alignment.center,
         children: <Widget>[
-          cachedNetworkImage(mediaUrl),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left:15.0,bottom: 5.5),
+              child: Text(
+                description,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontFamily: "karla"),
+              ),
+            ),
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(35.0),
+            child: Align(
+                alignment: Alignment.bottomRight,
+                heightFactor: 0.75,
+                widthFactor: 0.95,
+                child: cachedNetworkImage(mediaUrl)),
+          ),
+//          cachedNetworkImage(mediaUrl),
           showHeart
               ? Animator(
                   duration: Duration(milliseconds: 300),
@@ -300,7 +331,7 @@ class _PostState extends State<Post> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
+            Padding(padding: EdgeInsets.only(left: 20.0)),
             GestureDetector(
               onTap: handleLikePost,
               child: Icon(
@@ -339,22 +370,22 @@ class _PostState extends State<Post> {
             ),
           ],
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 20.0),
-              child: Text(
-                "$username ",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Expanded(child: Text(description))
-          ],
-        ),
+//        Row(
+//          crossAxisAlignment: CrossAxisAlignment.start,
+//          children: <Widget>[
+//            Container(
+//              margin: EdgeInsets.only(left: 20.0),
+//              child: Text(
+//                "$username ",
+//                style: TextStyle(
+//                  color: Colors.black,
+//                  fontWeight: FontWeight.bold,
+//                ),
+//              ),
+//            ),
+//            Expanded(child: Text(description))
+//          ],
+//        ),
       ],
     );
   }
@@ -368,7 +399,10 @@ class _PostState extends State<Post> {
       children: <Widget>[
         buildPostHeader(),
         buildPostImage(),
-        buildPostFooter()
+        buildPostFooter(),
+        Divider(
+          height: 20,
+        )
       ],
     );
   }

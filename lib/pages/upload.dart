@@ -78,7 +78,8 @@ class _UploadState extends State<Upload>
   Scaffold buildSplashScreen() {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset("assets/images/precisely_logo.png",height: 40.0,width: 40.0,),
+        title: Image.asset(
+          "assets/images/precisely_logo.png", height: 40.0, width: 40.0,),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
@@ -130,7 +131,7 @@ class _UploadState extends State<Upload>
 
   Future<String> uploadImage(imageFile) async {
     StorageUploadTask uploadTask =
-        storageRef.child("post_$postId.jpg").putFile(imageFile);
+    storageRef.child("post_$postId.jpg").putFile(imageFile);
     StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
@@ -162,26 +163,39 @@ class _UploadState extends State<Upload>
     });
   }
 
-  createPostWithHashTagsInFirestore(
-      {String mediaUrl, String location, String description}) {
-    hashTags.forEach((hash) {
-      hashTagsRef.document(postId).setData({
-        "hashName": hash,
-        "postDetails": [{
-          "postId": postId,
-          "ownerId": widget.currentUser.id,
-          "username": widget.currentUser.username,
-          "mediaUrl": mediaUrl,
-          "description": description,
-          "location": location,
-          "timestamp": timestamp,
-          "likes": {}
-        }],
-        "timestamp": timestamp,
-        "followers": [],
-      });
-    });
-  }
+//  createPostWithHashTagsInFirestore(
+//      {String mediaUrl, String location, String description}) async {
+//    final QuerySnapshot result =
+//        await hashTagsRef.getDocuments();
+//    final List<DocumentSnapshot> documents = result.documents;
+//    List alreadyHash=[];
+//    documents.forEach((data) => alreadyHash.add(data.documentID));
+//    hashTags.forEach((hash) {
+//     if(alreadyHash.contains(hash)){
+////       hashTagsRef.document(hash).updateData((data){
+////
+////       });
+//
+//     }else{
+//       hashTagsRef.document(hash).setData({
+//         "hashName": hash,
+//         "postDetails": [{
+//           "postId": postId,
+//           "ownerId": widget.currentUser.id,
+//           "username": widget.currentUser.username,
+//           "mediaUrl": mediaUrl,
+//           "description": description,
+//           "location": location,
+//           "timestamp": timestamp,
+//           "likes": {}
+//         }
+//         ],
+//         "timestamp": timestamp,
+//         "followers": [],
+//       });
+//     }
+//    });
+//  }
 
   handleSubmit() async {
     String strList = captionController.text;
@@ -204,7 +218,7 @@ class _UploadState extends State<Upload>
       location: locationController.text,
       description: captionController.text,
     );
-    createPostWithHashTagsInFirestore();
+//    createPostWithHashTagsInFirestore();
     captionController.clear();
     locationController.clear();
     setState(() {
@@ -222,7 +236,8 @@ class _UploadState extends State<Upload>
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: clearImage),
         centerTitle: true,
-        title:  Image.asset("assets/images/precisely_logo.png",height: 40.0,width: 40.0,),
+        title: Image.asset(
+          "assets/images/precisely_logo.png", height: 40.0, width: 40.0,),
         actions: [
           FlatButton(
             onPressed: isUploading ? null : () => handleSubmit(),
@@ -242,7 +257,10 @@ class _UploadState extends State<Upload>
           isUploading ? linearProgress() : Text(""),
           Container(
             height: 220.0,
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.8,
             child: Center(
               child: AspectRatio(
                 aspectRatio: 16 / 9,
@@ -263,7 +281,7 @@ class _UploadState extends State<Upload>
           ListTile(
             leading: CircleAvatar(
               backgroundImage:
-                  CachedNetworkImageProvider(widget.currentUser.photoUrl),
+              CachedNetworkImageProvider(widget.currentUser.photoUrl),
             ),
             title: Container(
               width: 250.0,
@@ -304,7 +322,7 @@ class _UploadState extends State<Upload>
               label: Text(
                 "Use Current Location",
                 style: TextStyle(color: Colors.white,
-                fontFamily: "karla"),
+                    fontFamily: "karla"),
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
@@ -329,7 +347,10 @@ class _UploadState extends State<Upload>
         .placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark placemark = placemarks[0];
     String completeAddress =
-        '${placemark.subThoroughfare} ${placemark.thoroughfare}, ${placemark.subLocality} ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea} ${placemark.postalCode}, ${placemark.country}';
+        '${placemark.subThoroughfare} ${placemark.thoroughfare}, ${placemark
+        .subLocality} ${placemark.locality}, ${placemark
+        .subAdministrativeArea}, ${placemark.administrativeArea} ${placemark
+        .postalCode}, ${placemark.country}';
     print(completeAddress);
     String formattedAddress = "${placemark.locality}, ${placemark.country}";
     locationController.text = formattedAddress;

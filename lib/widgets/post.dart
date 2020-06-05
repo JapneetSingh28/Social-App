@@ -4,6 +4,7 @@ import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:social_networking/models/user.dart';
 import 'package:social_networking/pages/activity_feed.dart';
 import 'package:social_networking/pages/comments.dart';
@@ -63,16 +64,16 @@ class Post extends StatefulWidget {
 
   @override
   _PostState createState() => _PostState(
-        postId: this.postId,
-        ownerId: this.ownerId,
-        username: this.username,
-        location: this.location,
-        description: this.description,
-        mediaUrl: this.mediaUrl,
-        likes: this.likes,
-        likeCount: getLikeCount(this.likes),
-        timestamp: this.timestamp,
-      );
+    postId: this.postId,
+    ownerId: this.ownerId,
+    username: this.username,
+    location: this.location,
+    description: this.description,
+    mediaUrl: this.mediaUrl,
+    likes: this.likes,
+    likeCount: getLikeCount(this.likes),
+    timestamp: this.timestamp,
+  );
 }
 
 class _PostState extends State<Post> {
@@ -114,6 +115,7 @@ class _PostState extends State<Post> {
           leading: CircleAvatar(
             backgroundImage: CachedNetworkImageProvider(user.photoUrl),
             backgroundColor: Colors.grey,
+            radius: 23.0,
           ),
           title: GestureDetector(
             onTap: () => showProfile(context, profileId: user.id),
@@ -121,22 +123,27 @@ class _PostState extends State<Post> {
               user.username[0].toUpperCase() +
                   user.username.substring(1).toLowerCase(),
               style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "karla"),
+                color: Colors.black,
+                fontFamily: "karla",
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          subtitle: Text(location),
+          subtitle: Text("Developer",style: TextStyle(
+              fontFamily: "karla",
+              fontSize: 14.0,
+              color: Color(0xff8B8B8B)
+          ),),
           trailing: isPostOwner
               ? IconButton(
-                  onPressed: () => handleDeletePost(context),
-                  icon: Icon(Icons.more_vert),
-                )
+            onPressed: () => handleDeletePost(context),
+            icon: Icon(Icons.more_vert),
+          )
               : Text(
-                  timeago.format(timestamp.toDate()),
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontFamily: "karla"),
-                ),
+            timeago.format(timestamp.toDate()),
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xff8B8B8B)),
+          ),
         );
       },
     );
@@ -285,40 +292,40 @@ class _PostState extends State<Post> {
           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left: 15.0, bottom: 5.5),
+              padding: const EdgeInsets.only(left:15.0,bottom: 5.5),
               child: Text(
                 description,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontFamily: "karla"),
+                style: TextStyle(fontFamily: "karla",fontSize: 14.0),
               ),
             ),
           ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(35.0),
+            borderRadius: BorderRadius.circular(20.0),
             child: Align(
                 alignment: Alignment.bottomRight,
-                heightFactor: 0.75,
-                widthFactor: 0.95,
+                heightFactor: 0.45,
+                widthFactor: 0.97,
                 child: cachedNetworkImage(mediaUrl)),
           ),
 //          cachedNetworkImage(mediaUrl),
           showHeart
               ? Animator(
-                  duration: Duration(milliseconds: 300),
-                  tween: Tween(begin: 0.8, end: 1.4),
-                  curve: Curves.elasticOut,
-                  cycles: 0,
-                  builder: (BuildContext context, AnimatorState animatorState,
-                          Widget child) =>
-                      Transform.scale(
-                    scale: animatorState.value,
-                    child: Icon(
-                      Icons.favorite,
-                      size: 80.0,
-                      color: Colors.red,
-                    ),
+            duration: Duration(milliseconds: 300),
+            tween: Tween(begin: 0.8, end: 1.4),
+            curve: Curves.elasticOut,
+            cycles: 0,
+            builder: (BuildContext context, AnimatorState animatorState,
+                Widget child) =>
+                Transform.scale(
+                  scale: animatorState.value,
+                  child: Icon(
+                    Icons.favorite,
+                    size: 80.0,
+                    color: Colors.red,
                   ),
-                )
+                ),
+          )
               : Text(""),
         ],
       ),
@@ -328,48 +335,119 @@ class _PostState extends State<Post> {
   buildPostFooter() {
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(padding: EdgeInsets.only(left: 20.0)),
-            GestureDetector(
-              onTap: handleLikePost,
-              child: Icon(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                size: 28.0,
-                color: Colors.pink,
+        Padding(
+          padding: const EdgeInsets.only(left:8.0,right: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  CircleAvatar(
+                      backgroundColor: Color(0xff6D00D9),
+                      radius: 13.5,
+                      child: Center(child: Icon(Icons.thumb_up,color: Colors.white,size: 15.0,))),
+                  Padding(
+                    padding: const EdgeInsets.only(left:5.0,right: 5.0),
+                    child: CircleAvatar(
+                        backgroundColor: Color(0xffFF6A6A),
+                        radius: 13.5,
+                        child: Center(child: Icon(Icons.favorite,color: Colors.white,size: 15.0,))),
+                  ),
+                  CircleAvatar(
+                      backgroundColor: Color(0xff88F684),
+                      radius: 13.5,
+                      child: Center(child: Image.asset("assets/images/clap.png",
+                        height: 20.0,
+                        width: 20.0,))),
+                  Padding(
+                    padding: const EdgeInsets.only(left:5.0),
+                    child: Text(
+                      "$likeCount",
+                      style: TextStyle(
+                          color: Color(0xff8B8B8B),
+                          fontFamily: "karla",
+                          fontSize: 14.0
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Padding(padding: EdgeInsets.only(right: 20.0)),
-            GestureDetector(
-              onTap: () => showComments(
-                context,
-                postId: postId,
-                ownerId: ownerId,
-                mediaUrl: mediaUrl,
-              ),
-              child: Icon(
-                Icons.chat,
-                size: 28.0,
-                color: Colors.blue[900],
-              ),
-            ),
-          ],
+              Text("2 comments",
+                style: TextStyle(fontSize: 14.0,color: Color(0xff8B8B8B),fontFamily: "karla"),)
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left:8.0,right: 8.0),
+          child: Divider(
+            color: Color(0xffBDBDBD),
+            thickness: 0.2,
+          ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 20.0),
-              child: Text(
-                "$likeCount likes",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "karla"),
-              ),
-            ),
+            FlatButton.icon(
+                onPressed: handleLikePost,
+                icon: Icon(Icons.thumb_up,color:isLiked?Color(0xff6D00D9):Color(0xff8B8B8B) ,),
+                label: Text("Like",style: TextStyle(fontFamily: "karla",color: Color(0xff8B8B8B)),)),
+            FlatButton.icon(
+                onPressed:()=> showComments(
+                  context,
+                  postId: postId,
+                  ownerId: ownerId,
+                  mediaUrl: mediaUrl,
+                ),
+                icon: Icon(Icons.chat_bubble_outline,color:Color(0xff8B8B8B) ,),
+                label: Text("Comment",style: TextStyle(fontFamily: "karla",color: Color(0xff8B8B8B)),)),
+            FlatButton.icon(
+                onPressed: (){},
+                icon: Icon(Icons.share,color:Color(0xff8B8B8B) ,),
+                label: Text("Share",style: TextStyle(fontFamily: "karla",color: Color(0xff8B8B8B)),))
           ],
         ),
+//        Row(
+//          mainAxisAlignment: MainAxisAlignment.start,
+//          children: <Widget>[
+//            Padding(padding: EdgeInsets.only(left: 20.0)),
+//            GestureDetector(
+//              onTap: handleLikePost,
+//              child: Icon(
+//                isLiked ? Icons.favorite : Icons.favorite_border,
+//                size: 28.0,
+//                color: Colors.pink,
+//              ),
+//            ),
+//            Padding(padding: EdgeInsets.only(right: 20.0)),
+//            GestureDetector(
+//              onTap: () => showComments(
+//                context,
+//                postId: postId,
+//                ownerId: ownerId,
+//                mediaUrl: mediaUrl,
+//              ),
+//              child: Icon(
+//                Icons.chat,
+//                size: 28.0,
+//                color: Colors.blue[900],
+//              ),
+//            ),
+//          ],
+//        ),
+//        Row(
+//          children: <Widget>[
+//            Container(
+//              margin: EdgeInsets.only(left: 20.0),
+//              child: Text(
+//                "$likeCount likes",
+//                style: TextStyle(
+//                  color: Colors.black,
+//                  fontWeight: FontWeight.bold,
+//                ),
+//              ),
+//            ),
+//          ],
+//        ),
 //        Row(
 //          crossAxisAlignment: CrossAxisAlignment.start,
 //          children: <Widget>[

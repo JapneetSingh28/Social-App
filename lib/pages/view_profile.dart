@@ -274,7 +274,7 @@ class _ViewProfileState extends State<ViewProfile> {
     return Container(
       padding: EdgeInsets.only(top: 2.0),
       child: IconButton(
-        color:  isFollowing ? Colors.white:Colors.black,
+        color:  isFollowing ? Colors.white:Theme.of(context).primaryColor,
         onPressed: function,
         icon: icon,
       ),

@@ -336,8 +336,10 @@ class _StatusState extends State<Status>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Status"),
+        title: Text("Status",style: TextStyle(color: Colors.deepPurple),),
         centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.deepPurple),
       ),
       body: file == null ? sendStory() : buildUploadForm(),
     );

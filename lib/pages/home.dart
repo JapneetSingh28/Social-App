@@ -8,6 +8,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:social_networking/models/user.dart';
 import 'package:social_networking/pages/activity_feed.dart';
 import 'package:social_networking/pages/create_account.dart';
+import 'package:social_networking/pages/job_home.dart';
+import 'package:social_networking/pages/job_listing.dart';
 import 'package:social_networking/pages/profile.dart';
 import 'package:social_networking/pages/search.dart';
 import 'package:social_networking/pages/timeline.dart';
@@ -30,6 +32,7 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 String email;
 String password;
 bool _autoValidate = false;
+int index=0;
 bool obscureyext=true;
 class Home extends StatefulWidget {
   @override
@@ -126,6 +129,9 @@ class _HomeState extends State<Home> {
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+    setState(() {
+      index=pageIndex;
+    });
   }
 
   Scaffold buildAuthScreen() {
@@ -136,7 +142,7 @@ class _HomeState extends State<Home> {
           Search(),
           Upload(currentUser: currentUser),
           ActivityFeed(),
-          Profile(profileId: currentUser?.id),
+          JobHome(currentUser: currentUser),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
@@ -147,8 +153,16 @@ class _HomeState extends State<Home> {
           onTap: onTap,
           activeColor: Theme.of(context).primaryColor,
           items: [
-            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom1.png")),
-            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom2.png")),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom1.png",
+            fit: BoxFit.scaleDown,
+            height: 30.0,
+            width: 30.0,
+            color: index==0?Color(0xff6D00D9):Color(0xff8B8B8B),)),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom2.png",
+            fit: BoxFit.scaleDown,
+            height: 30.0,
+            width: 30.0,
+            color: index==1?Color(0xff6D00D9):Color(0xff8B8B8B),)),
             BottomNavigationBarItem(
               icon:  Icon(
                 Icons.add_circle,
@@ -156,8 +170,16 @@ class _HomeState extends State<Home> {
                 color: Color(0xff6D00D9),
               ),
             ),
-            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom3.png")),
-            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom4.png")),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom3.png",
+            color: index==3?Color(0xff6D00D9):Color(0xff8B8B8B),
+            fit: BoxFit.scaleDown,
+            height: 30.0,
+            width: 30.0,)),
+            BottomNavigationBarItem(icon: Image.asset("assets/images/bottom4.png",
+            color: index==4?Color(0xff6D00D9):Color(0xff8B8B8B),
+            fit: BoxFit.scaleDown,
+            height: 30.0,
+            width: 30.0,)),
           ]),
     );
     // return RaisedButton(

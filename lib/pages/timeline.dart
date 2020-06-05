@@ -271,7 +271,7 @@ class _TimelineState extends State<Timeline> {
           }
         });
         return Container(
-          color: Theme.of(context).accentColor.withOpacity(0.2),
+          color: Colors.white,
           child: Column(
             children: <Widget>[
               Container(
@@ -290,6 +290,7 @@ class _TimelineState extends State<Timeline> {
                     Text(
                       "Users to Follow",
                       style: TextStyle(
+                        fontFamily: "karla",
                         color: Theme.of(context).primaryColor,
                         fontSize: 30.0,
                       ),

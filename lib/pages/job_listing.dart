@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_networking/pages/home.dart';
 import 'package:social_networking/pages/job_description.dart';
 
 class JobListing extends StatefulWidget {
@@ -31,14 +32,11 @@ class _JobListingState extends State<JobListing> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                ),
-                              ),
+                                onTap: (){Navigator.of(context).pop();},
+                                  child: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              )),
                               Row(
                                 children: <Widget>[
                                   Icon(
@@ -90,6 +88,7 @@ class _JobListingState extends State<JobListing> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 50),
                       child: ListView(
+                        physics: ScrollPhysics(),
                         children: <Widget>[
                           Container(
                             height: 100,

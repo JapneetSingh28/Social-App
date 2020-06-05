@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:social_networking/pages/home.dart';
 import 'package:social_networking/pages/post_screen.dart';
 import 'package:social_networking/pages/profile.dart';
+import 'package:social_networking/pages/view_profile.dart';
 import 'package:social_networking/widgets/header.dart';
 import 'package:social_networking/widgets/progress.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -191,7 +192,7 @@ showProfile(BuildContext context, {String profileId}) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => Profile(
+      builder: (context) => ViewProfile(
         profileId: profileId,
       ),
     ),

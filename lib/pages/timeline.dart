@@ -341,7 +341,10 @@ class _TimelineState extends State<Timeline> {
             child: Row(
               children: <Widget>[
                 CircleAvatar(
-                  child: Text("A"),
+                  radius: 40.0,
+                  backgroundColor: Colors.grey,
+                  backgroundImage:
+                  CachedNetworkImageProvider(currentUser.photoUrl),
                 ),
                 SizedBox(
                   width: 20,
@@ -349,7 +352,7 @@ class _TimelineState extends State<Timeline> {
                 Column(
                   children: <Widget>[
                     Text(
-                      "Abhishek Avi",
+                      currentUser.username,
                       style:
                       TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -368,7 +371,7 @@ class _TimelineState extends State<Timeline> {
               onTap: () {
                 Navigator.of(context)
                     .push(new MaterialPageRoute(builder: (_){
-                  return ViewProfile();
+                  return ViewProfile(profileId: currentUser.id,);
                 }));
               },
               child: Text(

@@ -163,39 +163,71 @@ class _UploadState extends State<Upload>
     });
   }
 
-//  createPostWithHashTagsInFirestore(
-//      {String mediaUrl, String location, String description}) async {
-//    final QuerySnapshot result =
-//        await hashTagsRef.getDocuments();
-//    final List<DocumentSnapshot> documents = result.documents;
+  createPostWithHashTagsInFirestore (
+      {String mediaUrl, String location, String description}) async {
+    final QuerySnapshot result =
+        await hashTagsRef.getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
 //    List alreadyHash=[];
-//    documents.forEach((data) => alreadyHash.add(data.documentID));
-//    hashTags.forEach((hash) {
+    Map<dynamic,dynamic> dataHash = {};
+//    documents.forEach((data) => alreadyHash.add(data.data));
+
+    documents.forEach((data) => dataHash.addAll({data.documentID:data.data}));
+    print(dataHash);
+    print("object");
+
+    hashTags.forEach((hash) {
+      List<Map> dataHashall = dataHash[hash]['postDetails'];
+//      dataHashall.forEach((M){
+//
+//      });
+      print(hash);
+      print("object");
 //     if(alreadyHash.contains(hash)){
 ////       hashTagsRef.document(hash).updateData((data){
 ////
 ////       });
 //
 //     }else{
-//       hashTagsRef.document(hash).setData({
-//         "hashName": hash,
-//         "postDetails": [{
-//           "postId": postId,
-//           "ownerId": widget.currentUser.id,
-//           "username": widget.currentUser.username,
-//           "mediaUrl": mediaUrl,
-//           "description": description,
-//           "location": location,
-//           "timestamp": timestamp,
-//           "likes": {}
-//         }
-//         ],
-//         "timestamp": timestamp,
-//         "followers": [],
-//       });
+//
 //     }
-//    });
-//  }
+     hashTagsRef.document(hash).get().then((onValue){
+       onValue.exists ?  hashTagsRef.document(hash).updateData({
+//         "hashName": hash,
+           "postDetails": [
+//             dataHash[hash]['postDetails'],
+             {
+             "postId": postId,
+             "ownerId": widget.currentUser.id,
+             "username": widget.currentUser.username,
+             "mediaUrl": mediaUrl,
+             "description": description,
+             "location": location,
+             "timestamp": timestamp,
+             "likes": {}
+             }
+           ],
+       })
+       :
+         hashTagsRef.document(hash).setData({
+           "hashName": hash,
+           "postDetails": [{
+             "postId": postId,
+             "ownerId": widget.currentUser.id,
+             "username": widget.currentUser.username,
+             "mediaUrl": mediaUrl,
+             "description": description,
+             "location": location,
+             "timestamp": timestamp,
+             "likes": {}
+           }
+           ],
+           "timestamp": timestamp,
+           "followers": [],
+         });
+     });
+    });
+  }
 
   handleSubmit() async {
     String strList = captionController.text;
@@ -218,7 +250,11 @@ class _UploadState extends State<Upload>
       location: locationController.text,
       description: captionController.text,
     );
-//    createPostWithHashTagsInFirestore();
+    await createPostWithHashTagsInFirestore(
+      mediaUrl: mediaUrl,
+      location: locationController.text,
+      description: captionController.text,
+    );
     captionController.clear();
     locationController.clear();
     setState(() {

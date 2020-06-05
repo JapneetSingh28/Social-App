@@ -22,9 +22,30 @@ class PostTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String decp= '';
+    if(post.description.length>10){
+      decp=post?.description?.substring(0,8);
+    }else{
+      decp=post?.description;
+    }
     return GestureDetector(
       onTap: () => showPost(context),
-      child: cachedNetworkImage(post.mediaUrl),
+      child: Container(
+//        color: Colors.grey[200],
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                child:cachedNetworkImage(post.mediaUrl),
+              ),
+            ),
+//          cachedNetworkImage(post.mediaUrl),
+            Text(decp,style: TextStyle(fontSize: 10),softWrap: true,
+              overflow: TextOverflow.clip,),
+          ],
+        ),
+      ),
     );
   }
 }

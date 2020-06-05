@@ -121,9 +121,9 @@ class _PostState extends State<Post> {
               user.username[0].toUpperCase() +
                   user.username.substring(1).toLowerCase(),
               style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "karla"),
             ),
           ),
           subtitle: Text(location),
@@ -285,7 +285,7 @@ class _PostState extends State<Post> {
           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left:15.0,bottom: 5.5),
+              padding: const EdgeInsets.only(left: 15.0, bottom: 5.5),
               child: Text(
                 description,
                 overflow: TextOverflow.ellipsis,
@@ -363,9 +363,9 @@ class _PostState extends State<Post> {
               child: Text(
                 "$likeCount likes",
                 style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "karla"),
               ),
             ),
           ],

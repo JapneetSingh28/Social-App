@@ -96,7 +96,7 @@ class _AvatarDataState extends State<AvatarData> {
               ),
               Text(
                 username,
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 10,fontFamily: "karla"),
               ),
             ],
           ),

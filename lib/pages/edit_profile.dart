@@ -127,9 +127,9 @@ class _EditProfileState extends State<EditProfile> {
           IconButton(
             onPressed: () => Navigator.pop(context),
             icon: Icon(
-              Icons.done,
+              Icons.clear,
               size: 30.0,
-              color: Colors.green,
+              color: Colors.deepPurple,
             ),
           ),
         ],

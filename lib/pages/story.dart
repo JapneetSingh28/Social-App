@@ -154,19 +154,7 @@ class _StatusState extends State<Status>
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: clearImage),
         title: Text(
-          "Caption Post",
-          style: TextStyle(color: Colors.black),
-        ),
-        actions: [
-          FlatButton(
-            onPressed: isUploading ? null : () => handleSubmit(),
-            child: Text(
-              "Post",
-              style: TextStyle(
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-              ),
+  
             ),
           ),
         ],
@@ -185,13 +173,7 @@ class _StatusState extends State<Status>
                     image: DecorationImage(
                       fit: BoxFit.cover,
                       image: FileImage(file),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
+              
             padding: EdgeInsets.only(top: 10.0),
           ),
           ListTile(
@@ -215,24 +197,7 @@ class _StatusState extends State<Status>
     );
   }
 
-  handleSubmit() async {
-    setState(() {
-      isUploading = true;
-    });
-    await compressImage();
-    String mediaUrl = await uploadImage(file);
-    createStoryInFirestore(
-      mediaUrl: mediaUrl,
-      description: captionController.text,
-    );
-    captionController.clear();
-    setState(() {
-      file = null;
-      isUploading = false;
-      storyId = Uuid().v4();
-    });
-  }
-
+  
   Future<String> uploadImage(imageFile) async {
     StorageUploadTask uploadTask =
     storageRef.child("post_$storyId.jpg").putFile(imageFile);
@@ -242,17 +207,7 @@ class _StatusState extends State<Status>
   }
 
   createStoryInFirestore(
-      {String mediaUrl, String location, String description}) {
-    postsRef
-        .document(widget.currentUser.id)
-        .collection("userStories")
-        .document(storyId)
-        .setData({
-      "storyId": storyId,
-      "ownerId": widget.currentUser.id,
-      "username": widget.currentUser.username,
-      "mediaUrl": mediaUrl,
-      "description": description,
+      
       "timestamp": timestamp,
       "mediaType" : mediaType,
       "backgroundColor" : "",

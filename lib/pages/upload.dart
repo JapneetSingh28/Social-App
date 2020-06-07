@@ -87,11 +87,13 @@ class _UploadState extends State<Upload>
         backgroundColor: Colors.white,
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SvgPicture.asset('assets/images/upload.svg', height: 260.0),
+            SvgPicture.asset('assets/images/upload.svg', height: 240.0),
             Padding(
               padding: EdgeInsets.only(top: 20.0),
               child: RaisedButton(
@@ -147,6 +149,7 @@ class _UploadState extends State<Upload>
         .collection("userPosts")
         .document(postId)
         .setData({
+      "hashName":"",
       "postId": postId,
       "ownerId": widget.currentUser.id,
       "username": widget.currentUser.username,
@@ -186,10 +189,27 @@ class _UploadState extends State<Upload>
 //      });
       print(hash);
       print("object");
+      postsRef
+          .document(hash)
+          .collection("userPosts")
+          .document(postId)
+          .setData({
+        "hashName":hash,
+        "postId": postId,
+        "ownerId": widget.currentUser.id,
+        "username": widget.currentUser.username,
+        "mediaUrl": mediaUrl,
+        "description": description,
+        "location": location,
+        "timestamp": timestamp,
+        "likes": {},
+      });
+
       hashTagsRef.document(hash).setData({
         "hashName": hash,
         "timestamp": timestamp,
       });
+
       hashTagsRef
           .document(hash)
           .collection("hashtagposts")
@@ -422,6 +442,13 @@ class _UploadState extends State<Upload>
 
   bool get wantKeepAlive => true;
 
+  @override
+  void dispose() {
+    captionController?.clear();
+    locationController?.clear();
+    hashTags?.clear();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     super.build(context);

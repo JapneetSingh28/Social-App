@@ -193,69 +193,47 @@ class _HomeState extends State<Home> {
         child: ListView(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top:30.0),
+              padding: const EdgeInsets.only(top:50.0),
               child: Image.asset("assets/images/precisely_logo.png",
               height: 80.89,
               width: 80.94,),
             ),
             Padding(
-              padding: const EdgeInsets.only(top:14.0),
+              padding: const EdgeInsets.only(top:20.0),
               child: Image.asset("assets/images/component.png",
               height: 30.0,
               width: 100.0,),
             ),
-           Container(
-             child: Column(
-               mainAxisAlignment: MainAxisAlignment.start,
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: <Widget>[
-                 Padding(
-                   padding: const EdgeInsets.only(top:50.0,left: 30.0),
-                   child: Text("Login",
-                     style: TextStyle(
-                       fontSize: 24.0,
-                       fontWeight: FontWeight.bold,
-                     fontFamily: "karla"),),
-                 ),
-                 Padding(
-                   padding: const EdgeInsets.only(top:30.0,left: 30.0),
-                   child: Text("Email",
-                     style: TextStyle(
-                         fontFamily:"karla",
-                     fontSize: 16.0,),),
-                 ),
-                 Padding(
-                   padding: const EdgeInsets.only(left:30.0,right: 30.0),
-                   child: TextField(
-                     decoration: InputDecoration(
-                       hintText: "anon@example.com",
-                       hintStyle: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xffBDBDBD)),
-                     ),
-                   ),
-                 ),
-                 Padding(
-                   padding: const EdgeInsets.only(top:20.0,left: 30.0),
-                   child: Text("Password",
-                     style: TextStyle(
-                         fontFamily:"karla",
-                         fontSize: 16.0),),
-                 ),
-                 Padding(
-                   padding: const EdgeInsets.only(left:30.0,right: 30.0),
-                   child: TextField(
-                     decoration: InputDecoration(
-                         hintText: "•••••••••••••",
-                         hintStyle: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xffBDBDBD)),
-                     ),
-                   ),
-                 )
-               ],
-             ),
-           ),
+            Container(height: 10,),
             Padding(
-              padding: const EdgeInsets.only(top:30.0,left: 100.0,right: 100.0),
+              padding: const EdgeInsets.all(7.0),
               child: InkWell(
-                onTap: (){
+                onTap: () {
+                  login();
+                },
+                child: Container(
+                  height: 69.0,
+                  width: 69.0,
+//                  decoration: BoxDecoration(
+//                      color: Colors.white,
+//                      shape: BoxShape.circle,
+//                      image: DecorationImage(image: AssetImage(
+//                          "assets/images/google.png"),
+//                          fit: BoxFit.scaleDown),
+//                      border: Border.all(color: Color(0xff6D00D9),width: 1.0)
+//                    //borderRadius: BorderRadius.circular(30.0),
+//                  ),
+                  child: Image.asset("assets/images/newgoogle.png",
+//                    height: 80.89,
+//                    width: 80.94,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: InkWell(
+                onTap: () {
                   currentUser = User(
                     id:'102559740660975769254',
                     email: 'tempm7338@gmail.com',
@@ -269,101 +247,186 @@ class _HomeState extends State<Home> {
                   });
                 },
                 child: Container(
-                  height: 36.0,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      color: Color(0xff6D00D9)
-                  ),
-                  child: Center(child: Text("Login",
-                    style: TextStyle(color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                    fontFamily: "karla"),)),
+                  height: 65.0,
+                  width: 65.0,
+//                  decoration: BoxDecoration(
+//                      color: Colors.white,
+//                      shape: BoxShape.circle,
+//                      image: DecorationImage(image: AssetImage(
+//                          "assets/images/linkedin.png"),
+//                          fit: BoxFit.scaleDown),
+//                      border: Border.all(color: Color(0xff6D00D9),width: 1.0)
+//                    //borderRadius: BorderRadius.circular(30.0),
+//                  ),
+                child: Image.asset("assets/images/newdeveloper.png",
+//                  height: 65,
+//                  width: 65,
+                ),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text("Forgot password?",
-                style: TextStyle(
-                  color: Color(0xff6D00D9),
-                  fontSize: 14.0,
-                  fontFamily: "karla",
-                  decoration: TextDecoration.underline
-                ),),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text("or connect with",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "karla",
-                  ),),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: InkWell(
-                      onTap: () {
-                        currentUser = User(
-                          id:'102559740660975769254',
-                          email: 'tempm7338@gmail.com',
-                          username: 'Jaskaran',
-                          photoUrl: ' https://lh3.googleusercontent.com/-2ZqfKtoAME4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmTcfz1_oMIBZyhbPQkcUDZWwIluA/s96-c/photo.jpg',
-                          displayName: 'Temp Mail',
-                          bio: '',
-                        );
-                        setState(() {
-                          isAuth=true;
-                        });
-                      },
-                      child: Container(
-                        height: 46.0,
-                        width: 46.0,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(image: AssetImage(
-                                "assets/images/linkedin.png"),
-                                fit: BoxFit.scaleDown),
-                          border: Border.all(color: Color(0xff6D00D9),width: 1.0)
-                          //borderRadius: BorderRadius.circular(30.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: InkWell(
-                      onTap: () {
-                        login();
-                      },
-                      child: Container(
-                        height: 46.0,
-                        width: 46.0,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(image: AssetImage(
-                                "assets/images/google.png"),
-                                fit: BoxFit.scaleDown),
-                          border: Border.all(color: Color(0xff6D00D9),width: 1.0)
-                          //borderRadius: BorderRadius.circular(30.0),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
+////           Container(
+////             child: Column(
+////               mainAxisAlignment: MainAxisAlignment.start,
+////               crossAxisAlignment: CrossAxisAlignment.start,
+////               children: <Widget>[
+////                 Padding(
+////                   padding: const EdgeInsets.only(top:50.0,left: 30.0),
+////                   child: Text("Login",
+////                     style: TextStyle(
+////                       fontSize: 24.0,
+////                       fontWeight: FontWeight.bold,
+////                     fontFamily: "karla"),),
+////                 ),
+////                 Padding(
+////                   padding: const EdgeInsets.only(top:30.0,left: 30.0),
+////                   child: Text("Email",
+////                     style: TextStyle(
+////                         fontFamily:"karla",
+////                     fontSize: 16.0,),),
+////                 ),
+////                 Padding(
+////                   padding: const EdgeInsets.only(left:30.0,right: 30.0),
+////                   child: TextField(
+////                     decoration: InputDecoration(
+////                       hintText: "anon@example.com",
+////                       hintStyle: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xffBDBDBD)),
+////                     ),
+////                   ),
+////                 ),
+////                 Padding(
+////                   padding: const EdgeInsets.only(top:20.0,left: 30.0),
+////                   child: Text("Password",
+////                     style: TextStyle(
+////                         fontFamily:"karla",
+////                         fontSize: 16.0),),
+////                 ),
+////                 Padding(
+////                   padding: const EdgeInsets.only(left:30.0,right: 30.0),
+////                   child: TextField(
+////                     decoration: InputDecoration(
+////                         hintText: "•••••••••••••",
+////                         hintStyle: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xffBDBDBD)),
+////                     ),
+////                   ),
+////                 )
+////               ],
+////             ),
+////           ),
+//            Padding(
+//              padding: const EdgeInsets.only(top:30.0,left: 100.0,right: 100.0),
+//              child: InkWell(
+//                onTap: (){
+//                  currentUser = User(
+//                    id:'102559740660975769254',
+//                    email: 'tempm7338@gmail.com',
+//                    username: 'Jaskaran',
+//                    photoUrl: ' https://lh3.googleusercontent.com/-2ZqfKtoAME4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmTcfz1_oMIBZyhbPQkcUDZWwIluA/s96-c/photo.jpg',
+//                    displayName: 'Temp Mail',
+//                    bio: '',
+//                  );
+//                  setState(() {
+//                    isAuth=true;
+//                  });
+//                },
+//                child: Container(
+//                  height: 36.0,
+//                  decoration: BoxDecoration(
+//                      borderRadius: BorderRadius.circular(25.0),
+//                      color: Color(0xff6D00D9)
+//                  ),
+//                  child: Center(child: Text("Login",
+//                    style: TextStyle(color: Colors.white,
+//                        fontWeight: FontWeight.bold,
+//                        fontSize: 14.0,
+//                    fontFamily: "karla"),)),
+//                ),
+//              ),
+//            ),
+//            Padding(
+//              padding: const EdgeInsets.all(8.0),
+//              child: Center(
+//                child: Text("Forgot password?",
+//                style: TextStyle(
+//                  color: Color(0xff6D00D9),
+//                  fontSize: 14.0,
+//                  fontFamily: "karla",
+//                  decoration: TextDecoration.underline
+//                ),),
+//              ),
+//            ),
+//            Padding(
+//              padding: const EdgeInsets.all(8.0),
+//              child: Center(
+//                child: Text("or connect with",
+//                  style: TextStyle(
+//                      fontSize: 16.0,
+//                      fontFamily: "karla",
+//                  ),),
+//              ),
+//            ),
+
+
+//            Padding(
+//              padding: const EdgeInsets.all(8.0),
+//              child: Row(
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: <Widget>[
+//                  Padding(
+//                    padding: const EdgeInsets.only(right: 20.0),
+//                    child: InkWell(
+//                      onTap: () {
+//                        currentUser = User(
+//                          id:'102559740660975769254',
+//                          email: 'tempm7338@gmail.com',
+//                          username: 'Jaskaran',
+//                          photoUrl: ' https://lh3.googleusercontent.com/-2ZqfKtoAME4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmTcfz1_oMIBZyhbPQkcUDZWwIluA/s96-c/photo.jpg',
+//                          displayName: 'Temp Mail',
+//                          bio: '',
+//                        );
+//                        setState(() {
+//                          isAuth=true;
+//                        });
+//                      },
+//                      child: Container(
+//                        height: 46.0,
+//                        width: 46.0,
+//                        decoration: BoxDecoration(
+//                            color: Colors.white,
+//                            shape: BoxShape.circle,
+//                            image: DecorationImage(image: AssetImage(
+//                                "assets/images/linkedin.png"),
+//                                fit: BoxFit.scaleDown),
+//                          border: Border.all(color: Color(0xff6D00D9),width: 1.0)
+//                          //borderRadius: BorderRadius.circular(30.0),
+//                        ),
+//                      ),
+//                    ),
+//                  ),
+//                  Padding(
+//                    padding: const EdgeInsets.only(left: 8.0),
+//                    child: InkWell(
+//                      onTap: () {
+//                        login();
+//                      },
+//                      child: Container(
+//                        height: 46.0,
+//                        width: 46.0,
+//                        decoration: BoxDecoration(
+//                            color: Colors.white,
+//                            shape: BoxShape.circle,
+//                            image: DecorationImage(image: AssetImage(
+//                                "assets/images/google.png"),
+//                                fit: BoxFit.scaleDown),
+//                          border: Border.all(color: Color(0xff6D00D9),width: 1.0)
+//                          //borderRadius: BorderRadius.circular(30.0),
+//                        ),
+//                      ),
+//                    ),
+//                  )
+//                ],
+//              ),
+//            )
           ],
         ),
       ),
@@ -436,7 +499,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 2), (){
-      setState(() {
+      if (this.mounted)setState(() {
           isWaiting=true;
           });
       });

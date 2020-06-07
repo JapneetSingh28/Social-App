@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "136599316413",
-    "firebase_url": "https://social-network-48a6f.firebaseio.com",
-    "project_id": "social-network-48a6f",
+    "project_number": "136599316413123212132",
+    "firebase_url": "https://social-network-48a6f.firebaseio.com.in",
+    "project_id": "social-network-48a6f2131",
     "storage_bucket": "social-network-48a6f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:136599316413:android:dbbefd531bb59298bbd4d4",
+        "mobilesdk_app_id": "1:136599316413:android:dbbefd531bb592313212298bbd4d4",
         "android_client_info": {
           "package_name": "com.japneetsingh.fluttershare"
         }
       },
       "oauth_client": [
         {
-          "client_id": "136599316413-db4chl1lc86tt94siq01r5dudluvlisv.apps.googleusercontent.com",
+          "client_id": "136599316413-db4chl1lc86tt94siq0213211r5dudluvlisv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.japneetsingh.fluttershare",
-            "certificate_hash": "3dfcf87c6ec6f9246cfaf000ff1acf54bdc8c3ad"
+            "certificate_hash": "3dfcf87c6ec6f9246c11faf000ff1acf54bdc8c3ad"
           }
         },
         {
-          "client_id": "136599316413-vb965qec0hcndogi6vhbkp5qoujhffv2.apps.googleusercontent.com",
+          "client_id": "1365993213265416413-vb965qec0hcndogi6vhbkp5qoujhffv2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDx3mSczT1IfjkoQC4odA_jJ9oqxWNqfPw"
+          "current_key": "AIzaSyDx3m112125454SczT1IfjkoQC4odA_jJ9oqxWNqfPw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "136599316413-vb965qec0hcndogi6vhbkp5qoujhffv2.apps.googleusercontent.com",
+              "client_id": "136599316413-vb965qec0hcndogi6321326545321vhbkp5qoujhffv2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

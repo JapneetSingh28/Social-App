@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +13,7 @@ import 'package:social_networking/widgets/progress.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class Post extends StatefulWidget {
+  final String hashName;
   final String postId;
   final String ownerId;
   final String username;
@@ -23,16 +23,6 @@ class Post extends StatefulWidget {
   final dynamic likes;
   final Timestamp timestamp;
 
-  Post({
-    this.postId,
-    this.ownerId,
-    this.username,
-    this.location,
-    this.description,
-    this.mediaUrl,
-    this.likes,
-    this.timestamp,
-  });
 
   factory Post.fromDocument(DocumentSnapshot doc) {
     return Post(
@@ -44,6 +34,7 @@ class Post extends StatefulWidget {
       mediaUrl: doc['mediaUrl'],
       likes: doc['likes'],
       timestamp: doc['timestamp'],
+      hashName: doc['hashName'],
     );
   }
 
@@ -64,16 +55,17 @@ class Post extends StatefulWidget {
 
   @override
   _PostState createState() => _PostState(
-    postId: this.postId,
-    ownerId: this.ownerId,
-    username: this.username,
-    location: this.location,
-    description: this.description,
-    mediaUrl: this.mediaUrl,
-    likes: this.likes,
-    likeCount: getLikeCount(this.likes),
-    timestamp: this.timestamp,
-  );
+        postId: this.postId,
+        ownerId: this.ownerId,
+        username: this.username,
+        location: this.location,
+        description: this.description,
+        mediaUrl: this.mediaUrl,
+        likes: this.likes,
+        likeCount: getLikeCount(this.likes),
+        timestamp: this.timestamp,
+        hashName: this.hashName,
+      );
 }
 
 class _PostState extends State<Post> {
@@ -85,22 +77,27 @@ class _PostState extends State<Post> {
   final String description;
   final String mediaUrl;
   final Timestamp timestamp;
+  final String hashName;
   bool showHeart = false;
   bool isLiked;
   int likeCount;
   Map likes;
 
-  _PostState({
-    this.postId,
-    this.ownerId,
-    this.username,
-    this.location,
-    this.description,
-    this.mediaUrl,
-    this.likes,
-    this.likeCount,
-    this.timestamp,
-  });
+ 
+
+  int noComments = 0;
+
+  countComments() async {
+    QuerySnapshot snapshot = await commentsRef
+        .document(postId)
+        .collection('comments')
+        .getDocuments();
+    if (this.mounted)
+      setState(() {
+        noComments = snapshot.documents.length;
+//    print(noComments);
+      });
+  }
 
   buildPostHeader() {
     return FutureBuilder(
@@ -129,21 +126,24 @@ class _PostState extends State<Post> {
               ),
             ),
           ),
-          subtitle: Text("Developer",style: TextStyle(
-              fontFamily: "karla",
-              fontSize: 14.0,
-              color: Color(0xff8B8B8B)
-          ),),
+          subtitle: Text(
+            user.bio ?? "Developer",
+            style: TextStyle(
+                fontFamily: "karla", fontSize: 14.0, color: Color(0xff8B8B8B)),
+          ),
           trailing: isPostOwner
               ? IconButton(
-            onPressed: () => handleDeletePost(context),
-            icon: Icon(Icons.more_vert),
-          )
+                  onPressed: () => handleDeletePost(context),
+                  icon: Icon(Icons.more_vert),
+                )
               : Text(
-            timeago.format(timestamp.toDate()),
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontFamily: "karla",fontSize: 14.0,color: Color(0xff8B8B8B)),
-          ),
+                  timeago.format(timestamp.toDate()),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontFamily: "karla",
+                      fontSize: 14.0,
+                      color: Color(0xff8B8B8B)),
+                ),
         );
       },
     );
@@ -186,19 +186,7 @@ class _PostState extends State<Post> {
         doc.reference.delete();
       }
     });
-    // delete uploaded image for thep ost
-    storageRef.child("post_$postId.jpg").delete();
-    // then delete all activity feed notifications
-    QuerySnapshot activityFeedSnapshot = await activityFeedRef
-        .document(ownerId)
-        .collection("feedItems")
-        .where('postId', isEqualTo: postId)
-        .getDocuments();
-    activityFeedSnapshot.documents.forEach((doc) {
-      if (doc.exists) {
-        doc.reference.delete();
-      }
-    });
+  
     // then delete all comments
     QuerySnapshot commentsSnapshot = await commentsRef
         .document(postId)
@@ -211,41 +199,64 @@ class _PostState extends State<Post> {
     });
   }
 
-  handleLikePost() {
-    bool _isLiked = likes[currentUserId] == true;
+  handleLikePost() async {
+    if (hashName == null || hashName == "") {
+      print("User: $username , $hashName");
+      bool _isLiked = likes[currentUserId] == true;
 
-    if (_isLiked) {
-      postsRef
-          .document(ownerId)
-          .collection('userPosts')
-          .document(postId)
-          .updateData({'likes.$currentUserId': false});
-      removeLikeFromActivityFeed();
-      setState(() {
-        likeCount -= 1;
-        isLiked = false;
-        likes[currentUserId] = false;
-      });
-    } else if (!_isLiked) {
-      postsRef
-          .document(ownerId)
-          .collection('userPosts')
-          .document(postId)
-          .updateData({'likes.$currentUserId': true});
-      addLikeToActivityFeed();
-      setState(() {
-        likeCount += 1;
-        isLiked = true;
-        likes[currentUserId] = true;
-        showHeart = true;
-      });
-      Timer(Duration(milliseconds: 500), () {
+      if (_isLiked) {
+        postsRef
+            .document(ownerId)
+            .collection('userPosts')
+            .document(postId)
+            .updateData({'likes.$currentUserId': false});
+        removeLikeFromActivityFeed();
         setState(() {
-          showHeart = false;
+          likeCount -= 1;
+          isLiked = false;
+          likes[currentUserId] = false;
         });
-      });
-    }
-  }
+      } else if (!_isLiked) {
+        postsRef
+ 
+        });
+      }
+    } else {
+      print("User: $username , $hashName");
+      bool _isLiked = likes[currentUserId] == true;
+
+      if (_isLiked) {
+        postsRef
+            .document(ownerId)
+            .collection('userPosts')
+            .document(postId)
+            .updateData({'likes.$currentUserId': false});
+        postsRef
+            .document(hashName)
+            .collection('userPosts')
+            .document(postId)
+            .updateData({'likes.$currentUserId': false});
+        removeLikeFromActivityFeed();
+        setState(() {
+          likeCount -= 1;
+          isLiked = false;
+          likes[currentUserId] = false;
+        });
+      } else if (!_isLiked) {
+        postsRef
+            .document(ownerId)
+            .collection('userPosts')
+            .document(postId)
+            .updateData({'likes.$currentUserId': true});
+        addLikeToActivityFeed();
+        setState(() {
+          likeCount += 1;
+          isLiked = true;
+          likes[currentUserId] = true;
+          showHeart = true;
+        });
+        postsRef
+      
 
   addLikeToActivityFeed() {
     // add a notification to the postOwner's activity feed only if comment made by OTHER user (to avoid getting notification for our own like)
@@ -286,46 +297,35 @@ class _PostState extends State<Post> {
   buildPostImage() {
     return GestureDetector(
       onDoubleTap: handleLikePost,
-      child: Column(
-//        alignment: Alignment.center,
+      child: Stack(
+        alignment: Alignment.center,
         children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left:15.0,bottom: 5.5),
-              child: Text(
-                description,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontFamily: "karla",fontSize: 14.0),
+         ly: "karla", fontSize: 14.0),
+                  ),
+                ),
               ),
-            ),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: Align(
-                alignment: Alignment.bottomRight,
-                heightFactor: 0.45,
-                widthFactor: 0.97,
-                child: cachedNetworkImage(mediaUrl)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Align(
+                    alignment: Alignment.bottomRight,
+                    heightFactor: 0.45,
+                    widthFactor: 0.97,
+                    child: cachedNetworkImage(mediaUrl)),
+              ),
+            ],
           ),
 //          cachedNetworkImage(mediaUrl),
           showHeart
               ? Animator(
-            duration: Duration(milliseconds: 300),
-            tween: Tween(begin: 0.8, end: 1.4),
-            curve: Curves.elasticOut,
-            cycles: 0,
-            builder: (BuildContext context, AnimatorState animatorState,
-                Widget child) =>
-                Transform.scale(
-                  scale: animatorState.value,
-                  child: Icon(
-                    Icons.favorite,
-                    size: 80.0,
-                    color: Colors.red,
+                  duration: Duration(milliseconds: 300),
+                
+                    child: Icon(
+                      Icons.thumb_up,
+                      size: 80.0,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
-                ),
-          )
+                )
               : Text(""),
         ],
       ),
@@ -336,49 +336,47 @@ class _PostState extends State<Post> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(left:8.0,right: 8.0),
+          padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  CircleAvatar(
-                      backgroundColor: Color(0xff6D00D9),
-                      radius: 13.5,
-                      child: Center(child: Icon(Icons.thumb_up,color: Colors.white,size: 15.0,))),
                   Padding(
-                    padding: const EdgeInsets.only(left:5.0,right: 5.0),
+                    padding: const EdgeInsets.only(left: 10.0),
                     child: CircleAvatar(
-                        backgroundColor: Color(0xffFF6A6A),
+                        backgroundColor: Color(0xff6D00D9),
                         radius: 13.5,
-                        child: Center(child: Icon(Icons.favorite,color: Colors.white,size: 15.0,))),
-                  ),
-                  CircleAvatar(
-                      backgroundColor: Color(0xff88F684),
-                      radius: 13.5,
-                      child: Center(child: Image.asset("assets/images/clap.png",
-                        height: 20.0,
-                        width: 20.0,))),
+                        child: Center(
+            
+//                      radius: 13.5,
+//                      child: Center(child: Image.asset("assets/images/clap.png",
+//                        height: 20.0,
+//                        width: 20.0,))),
                   Padding(
-                    padding: const EdgeInsets.only(left:5.0),
+                    padding: const EdgeInsets.only(left: 5.0),
                     child: Text(
                       "$likeCount",
                       style: TextStyle(
                           color: Color(0xff8B8B8B),
                           fontFamily: "karla",
-                          fontSize: 14.0
-                      ),
+                          fontSize: 14.0),
                     ),
                   ),
                 ],
               ),
-              Text("2 comments",
-                style: TextStyle(fontSize: 14.0,color: Color(0xff8B8B8B),fontFamily: "karla"),)
+              Text(
+                "$noComments comments",
+                style: TextStyle(
+                    fontSize: 14.0,
+                    color: Color(0xff8B8B8B),
+                    fontFamily: "karla"),
+              )
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left:8.0,right: 8.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Divider(
             color: Color(0xffBDBDBD),
             thickness: 0.2,
@@ -389,21 +387,42 @@ class _PostState extends State<Post> {
           children: <Widget>[
             FlatButton.icon(
                 onPressed: handleLikePost,
-                icon: Icon(Icons.thumb_up,color:isLiked?Color(0xff6D00D9):Color(0xff8B8B8B) ,),
-                label: Text("Like",style: TextStyle(fontFamily: "karla",color: Color(0xff8B8B8B)),)),
-            FlatButton.icon(
-                onPressed:()=> showComments(
-                  context,
-                  postId: postId,
-                  ownerId: ownerId,
-                  mediaUrl: mediaUrl,
+                icon: Icon(
+                  Icons.thumb_up,
+                  color: isLiked ? Color(0xff6D00D9) : Color(0xff8B8B8B),
                 ),
-                icon: Icon(Icons.chat_bubble_outline,color:Color(0xff8B8B8B) ,),
-                label: Text("Comment",style: TextStyle(fontFamily: "karla",color: Color(0xff8B8B8B)),)),
+                label: Text(
+                  "Like",
+                  style:
+                      TextStyle(fontFamily: "karla", color: Color(0xff8B8B8B)),
+                )),
             FlatButton.icon(
-                onPressed: (){},
-                icon: Icon(Icons.share,color:Color(0xff8B8B8B) ,),
-                label: Text("Share",style: TextStyle(fontFamily: "karla",color: Color(0xff8B8B8B)),))
+                onPressed: () => showComments(
+                      context,
+                      postId: postId,
+                      ownerId: ownerId,
+                      mediaUrl: mediaUrl,
+                    ),
+                icon: Icon(
+                  Icons.chat_bubble_outline,
+                  color: Color(0xff8B8B8B),
+                ),
+                label: Text(
+                  "Comment",
+                  style:
+                      TextStyle(fontFamily: "karla", color: Color(0xff8B8B8B)),
+                )),
+            FlatButton.icon(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.share,
+                  color: Color(0xff8B8B8B),
+                ),
+                label: Text(
+                  "Share",
+                  style:
+                      TextStyle(fontFamily: "karla", color: Color(0xff8B8B8B)),
+                ))
           ],
         ),
 //        Row(
@@ -466,6 +485,12 @@ class _PostState extends State<Post> {
 //        ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    countComments();
   }
 
   @override

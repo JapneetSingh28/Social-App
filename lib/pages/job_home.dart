@@ -38,12 +38,12 @@ class _JobHomeState extends State<JobHome> {
         centerTitle: true,
         backgroundColor: Colors.white,
         actions: <Widget>[
-          IconButton(
-              icon: Icon(
-                Icons.search,
-                size: 35.0,
-              ),
-              onPressed: () {}),
+//          IconButton(
+//              icon: Icon(
+//                Icons.search,
+//                size: 35.0,
+//              ),
+//              onPressed: () {}),
           IconButton(
             icon: Image.asset("assets/images/msgicon.png"),
             onPressed: () {
@@ -58,7 +58,7 @@ class _JobHomeState extends State<JobHome> {
           )
         ],
       ),
-      drawer: buildDrawer(),
+//      drawer: buildDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

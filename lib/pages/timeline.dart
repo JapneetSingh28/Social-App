@@ -3,12 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_networking/models/user.dart';
+import 'package:social_networking/pages/StoryArchives.dart';
+import 'package:social_networking/pages/chatting.dart';
 import 'package:social_networking/pages/home.dart';
 import 'package:social_networking/pages/job_listing.dart';
 import 'package:social_networking/pages/search.dart';
+import 'package:social_networking/pages/testHome.dart';
 import 'package:social_networking/pages/view_profile.dart';
 
 import 'package:social_networking/pages/story.dart';
+import 'package:social_networking/src/pages/index.dart';
 import 'package:social_networking/widgets/avator.dart';
 import 'package:social_networking/widgets/header.dart';
 import 'package:social_networking/widgets/post.dart';
@@ -37,38 +41,15 @@ class _TimelineState extends State<Timeline> {
   @override
   void initState() {
     super.initState();
-    getTimeline();
-    getTimelineStory();
     getFollowing();
   }
 
-  getTimeline() async {
-    QuerySnapshot snapshot = await timelineRef
-        .document(widget.currentUser?.id)
-        .collection('timelinePosts')
-        .orderBy('timestamp', descending: true)
-        .getDocuments();
-    List<Post> posts =
-    snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
-    setState(() {
-      this.posts = posts;
-    });
+  logout() async {
+    await googleSignIn.signOut();
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
   }
 
-  getTimelineStory() async {
-    QuerySnapshot snapshot = await timelineRef
-        .document(widget.currentUser?.id)
-        .collection('timelineStories')
-        .orderBy('timestamp', descending: true)
-        .getDocuments();
-    List<AvatarData> avatar =
-    snapshot.documents.map((doc) => AvatarData.fromDocument(doc)).toList();
-    setState(() {
-      this.avatar = avatar;
-    });
-  }
-
-  getFollowing() async {
+   getFollowing() async {
     QuerySnapshot snapshot = await followingRef
         .document(currentUser?.id)
         .collection('userFollowing')
@@ -81,67 +62,69 @@ class _TimelineState extends State<Timeline> {
   buildTimeline() {
     if (posts == null) {
       return circularProgress();
-    } else if (posts?.isEmpty) {
+    } else if (posts.isEmpty) {
       return buildUsersToFollow();
     } else {
       return Container(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
 //                height: 75,
 //                width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Status(
-                                      profileId: currentUser.id,
-                                      currentUser: currentUser,
-                                    )));
-                          },
-                          child: Column(
-                            children: <Widget>[
-                              CircleAvatar(
-                                backgroundImage: CachedNetworkImageProvider(
-                                    currentUser.photoUrl),
-                                backgroundColor: Colors.grey,
-                                radius: 30,
-                              ),
-                              Text(
-                                currentUser.displayName,
-                                style: TextStyle(fontSize: 10,fontFamily: "karla"),
-                              ),
-                            ],
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    GestureDetector(
+                    
+                      child: Column(
+                        children: <Widget>[
+                          CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(
+                                currentUser.photoUrl),
+                            backgroundColor: Colors.grey,
+                            radius: 30,
                           ),
-                        ),
-                        Row(
-                          children: avatar,
-                        )
-                      ],
+                          Text(
+                            currentUser.displayName,
+                            style: TextStyle(fontSize: 10, fontFamily: "karla"),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    Row(
+                      children: avatar ??
+                          ListTile(
+                            title: Text(""),
+                          ),
+                    )
+                  ],
                 ),
               ),
-              Divider(height: 10,),
-              Expanded(
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView(children: posts),
-                ),
+            ),
+          ),
+          Divider(
+            height: 10,
+          ),
+          Expanded(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: ListView(
+                children: posts ??
+                    ListTile(
+                      title: Text(""),
+                    ),
               ),
-            ],
-          ));
+            ),
+          ),
+        ],
+      ));
     }
   }
 
@@ -250,7 +233,7 @@ class _TimelineState extends State<Timeline> {
   buildUsersToFollow() {
     return StreamBuilder(
       stream:
-      usersRef.orderBy('timestamp', descending: true).limit(30).snapshots(),
+          usersRef.orderBy('timestamp', descending: true).limit(30).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return circularProgress();
@@ -272,7 +255,7 @@ class _TimelineState extends State<Timeline> {
         });
         return Container(
           color: Colors.white,
-          child: Column(
+          child: ListView(
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(12.0),
@@ -309,21 +292,29 @@ class _TimelineState extends State<Timeline> {
   @override
   Widget build(context) {
     return Scaffold(
-
 //      appBar: header1(context, isAppTitle: true,),
       appBar: AppBar(
-        title: Image.asset("assets/images/precisely_logo.png",height: 40.0,width: 40.0,),
+        title: Image.asset(
+          "assets/images/precisely_logo.png",
+          height: 40.0,
+          width: 40.0,
+        ),
         iconTheme: new IconThemeData(color: Color(0xff8B8B8B)),
         centerTitle: true,
         backgroundColor: Colors.white,
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.search,size: 35.0,), onPressed: (){}),
-          IconButton(icon: Image.asset("assets/images/msgicon.png"),onPressed: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
-              return MessagePage();
-            }));
-          },)
-        ],),
+//          IconButton(icon: Icon(Icons.search,size: 35.0,), onPressed: (){}),
+          IconButton(
+            icon: Image.asset("assets/images/msgicon.png"),
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return MessagePage();
+              }));
+            },
+          )
+        ],
+      ),
 
       body: RefreshIndicator(
         onRefresh: () => getTimeline(),
@@ -345,7 +336,7 @@ class _TimelineState extends State<Timeline> {
                   radius: 40.0,
                   backgroundColor: Colors.grey,
                   backgroundImage:
-                  CachedNetworkImageProvider(currentUser.photoUrl),
+                      CachedNetworkImageProvider(currentUser.photoUrl),
                 ),
                 SizedBox(
                   width: 20,
@@ -354,12 +345,18 @@ class _TimelineState extends State<Timeline> {
                   children: <Widget>[
                     Text(
                       currentUser.username,
-                      style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontFamily: "karla",
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "450 Connections",
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                      "${followingList.length} Connections",
+                      style: TextStyle(
+                          fontFamily: "karla",
+                          color: Colors.grey,
+                          fontSize: 16),
                     ),
                   ],
                 )
@@ -370,15 +367,123 @@ class _TimelineState extends State<Timeline> {
             padding: const EdgeInsets.all(10.0),
             child: InkWell(
               onTap: () {
-                Navigator.of(context)
-                    .push(new MaterialPageRoute(builder: (_){
-                  return ViewProfile(profileId: currentUser.id,);
+                Navigator.of(context).push(new MaterialPageRoute(builder: (_) {
+                  return ViewProfile(
+                    profileId: currentUser.id,
+                  );
                 }));
               },
               child: Text(
                 "View Profile",
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 16.0),
+                    fontFamily: "karla",
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 16.0),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+//          Padding(
+//            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+//            child: Divider(
+//              thickness: 2,
+//            ),
+//          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Status(
+                              profileId: currentUser.id,
+                              currentUser: currentUser,
+                            )));
+              },
+              child: Text(
+                "Status",
+                style: TextStyle(
+                    color: Colors.deepPurple,
+                    fontFamily: "karla",
+                    fontSize: 15.0),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => storyArchives(
+                            profileId: currentUser.id,
+                          )));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Story Archives",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 15.0,
+                    fontFamily: "karla"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => IndexPage()));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Video Call",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 15.0,
+                    fontFamily: "karla"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: Divider(
+              thickness: 2,
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext c) {
+                return TestHome();
+              }));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Self Evaluation",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 15.0,
+                    fontFamily: "karla"),
               ),
             ),
           ),
@@ -390,66 +495,104 @@ class _TimelineState extends State<Timeline> {
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Text(
-              "Settings & Privacy",
-              style: TextStyle(fontSize: 15.0),
+            child: InkWell(
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MessagePage())),
+              child: Text(
+                "Settings & Privacy",
+                style: TextStyle(
+                    fontFamily: "karla",
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 15.0),
+              ),
             ),
           ),
+//          Padding(
+//            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+//            child: Divider(
+//              thickness: 2,
+//            ),
+//          ),
+//          Padding(
+//            padding: const EdgeInsets.all(10.0),
+//            child: Text(
+//              "Groups",
+//              style: TextStyle(fontSize: 15.0),
+//            ),
+//          ),
+//          Padding(
+//            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+//            child: Divider(
+//              thickness: 2,
+//            ),
+//          ),
+//          Padding(
+//            padding: const EdgeInsets.all(10.0),
+//            child: Text(
+//              "Events",
+//              style: TextStyle(fontSize: 15.0),
+//            ),
+//          ),
+//          Padding(
+//            padding: const EdgeInsets.only(left: 40.0),
+//            child: Text(
+//              "+ Add event",
+//              style: TextStyle(
+//                  color: Theme.of(context).primaryColor, fontSize: 15.0),
+//            ),
+//          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Divider(
               thickness: 2,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-              "Groups",
-              style: TextStyle(fontSize: 15.0),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: Divider(
-              thickness: 2,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-              "Events",
-              style: TextStyle(fontSize: 15.0),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 40.0),
-            child: Text(
-              "+ Add event",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor, fontSize: 15.0),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: Divider(
-              thickness: 2,
-            ),
-          ),
+//          Padding(
+//            padding: const EdgeInsets.all(10.0),
+//            child: InkWell(
+////              onTap: () => Navigator.push(context,
+////                  MaterialPageRoute(builder: (context) => ChattingScreen())),
+//              child: Text(
+//                "Settings & Privacy",
+//                style: TextStyle(fontFamily: "karla", fontSize: 15.0),
+//              ),
+//            ),
+//          ),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Text(
               "Hashtags",
-              style: TextStyle(fontSize: 15.0),
+              style: TextStyle(fontFamily: "karla", fontSize: 15.0),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 40.0),
-            child: Text(
-              "#india",
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor, fontSize: 15.0),
+            child: InkWell(
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MessagePage())),
+              child: Text(
+                "#india",
+                style: TextStyle(
+                    fontFamily: "karla",
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 15.0),
+              ),
             ),
           ),
+//          Padding(
+//            padding: const EdgeInsets.only(left: 40.0),
+//            child: InkWell(
+//              onTap: () => Navigator.push(context,
+//                  MaterialPageRoute(builder: (context) => MessagePage())),
+//              child: Text(
+//                "#india",
+//                style: TextStyle(
+//                    fontFamily: "karla",
+//                    color: Theme.of(context).primaryColor,
+//                    fontSize: 15.0),
+//              ),
+//            ),
+//          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Divider(
@@ -458,9 +601,15 @@ class _TimelineState extends State<Timeline> {
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Text(
-              "Terms & Conditions",
-              style: TextStyle(fontSize: 15.0),
+            child: InkWell(
+              onTap: logout,
+              child: Text(
+                "Logout",
+                style: TextStyle(
+                    fontFamily: "karla",
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 15.0),
+              ),
             ),
           )
         ],

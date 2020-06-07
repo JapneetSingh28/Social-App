@@ -45,36 +45,6 @@ class _HomeState extends State<Home> {
   PageController pageController;
   int pageIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    pageController = PageController();
-    // Detects when user signed in
-    googleSignIn.onCurrentUserChanged.listen((account) {
-      handleSignIn(account);
-    }, onError: (err) {
-      print('Error signing in: $err');
-    });
-    // Reauthenticate user when app is opened
-    googleSignIn.signInSilently(suppressErrors: false).then((account) {
-      handleSignIn(account);
-    }).catchError((err) {
-      print('Error signing in: $err');
-    });
-  }
-
-  handleSignIn(GoogleSignInAccount account) async {
-    if (account != null) {
-      await createUserInFirestore();
-      setState(() {
-        isAuth = true;
-      });
-    } else {
-      setState(() {
-        isAuth = false;
-      });
-    }
-  }
 
   createUserInFirestore() async {
     // 1) check if user exists in users collection in database (according to their id)
@@ -85,17 +55,6 @@ class _HomeState extends State<Home> {
       // 2) if the user doesn't exist, then we want to take them to the create account page
       final username = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateAccount()));
-
-      // 3) get username from create account, use it to make new user document in users collection
-      usersRef.document(user.id).setData({
-        "id": user.id,
-        "username": username,
-        "photoUrl": user.photoUrl,
-        "email": user.email,
-        "displayName": user.displayName,
-        "bio": "",
-        "timestamp": timestamp
-      });
 
       doc = await usersRef.document(user.id).get();
     }
@@ -188,85 +147,7 @@ class _HomeState extends State<Home> {
     // );
   }
   Scaffold buildUnAuthScreen(){
-    return Scaffold(
-      body: Container(
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top:50.0),
-              child: Image.asset("assets/images/precisely_logo.png",
-              height: 80.89,
-              width: 80.94,),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top:20.0),
-              child: Image.asset("assets/images/component.png",
-              height: 30.0,
-              width: 100.0,),
-            ),
-            Container(height: 10,),
-            Padding(
-              padding: const EdgeInsets.all(7.0),
-              child: InkWell(
-                onTap: () {
-                  login();
-                },
-                child: Container(
-                  height: 69.0,
-                  width: 69.0,
-//                  decoration: BoxDecoration(
-//                      color: Colors.white,
-//                      shape: BoxShape.circle,
-//                      image: DecorationImage(image: AssetImage(
-//                          "assets/images/google.png"),
-//                          fit: BoxFit.scaleDown),
-//                      border: Border.all(color: Color(0xff6D00D9),width: 1.0)
-//                    //borderRadius: BorderRadius.circular(30.0),
-//                  ),
-                  child: Image.asset("assets/images/newgoogle.png",
-//                    height: 80.89,
-//                    width: 80.94,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: InkWell(
-                onTap: () {
-                  currentUser = User(
-                    id:'102559740660975769254',
-                    email: 'tempm7338@gmail.com',
-                    username: 'Jaskaran',
-                    photoUrl: ' https://lh3.googleusercontent.com/-2ZqfKtoAME4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmTcfz1_oMIBZyhbPQkcUDZWwIluA/s96-c/photo.jpg',
-                    displayName: 'Temp Mail',
-                    bio: '',
-                  );
-                  setState(() {
-                    isAuth=true;
-                  });
-                },
-                child: Container(
-                  height: 65.0,
-                  width: 65.0,
-//                  decoration: BoxDecoration(
-//                      color: Colors.white,
-//                      shape: BoxShape.circle,
-//                      image: DecorationImage(image: AssetImage(
-//                          "assets/images/linkedin.png"),
-//                          fit: BoxFit.scaleDown),
-//                      border: Border.all(color: Color(0xff6D00D9),width: 1.0)
-//                    //borderRadius: BorderRadius.circular(30.0),
-//                  ),
-                child: Image.asset("assets/images/newdeveloper.png",
-//                  height: 65,
-//                  width: 65,
-                ),
-                ),
-              ),
-            ),
-////           Container(
-////             child: Column(
+ 
 ////               mainAxisAlignment: MainAxisAlignment.start,
 ////               crossAxisAlignment: CrossAxisAlignment.start,
 ////               children: <Widget>[

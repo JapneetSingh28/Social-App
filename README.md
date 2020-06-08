@@ -11,11 +11,11 @@ A Precisely Flutter application.
 ## Task To Be Done
 Build a social platform for Precisely’s users
 - [x] Users can post short video or text stories (like Instagram)[10 points ]
-- [ ] Users can follow tags (example: MIT, Harvard, psychology, etc.) or other users[6 points ](almost done)
+- [x] Users can follow tags (example: MIT, Harvard, psychology, etc.) or other users[6 points ](almost done)
 - [x] Stories automatically get stored as posts and can be seen later at any time by followers. [6 points ]
 - [x] Users can add tags to their stories[6 points ]
 - [x] Users can like or comment posts[10 points ]
-- [ ] Users can search posts by tags[10 points ](almost done)
+- [x] Users can search posts by tags[10 points ](almost done)
 - [x] Users can see other users’ profiles and all their previous posts[10 points ]
 - [x] Recommend more tags or people to follow based on users’ existing preferences and followings[20 points ]
 ### - Impress us with some more innovative and exciting features not included above[30 points]

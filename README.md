@@ -20,6 +20,7 @@ Build a social platform for Precisely’s users
 - [x] Recommend more tags or people to follow based on users’ existing preferences and followings[20 points ]
 - [x] Users can chat with the other users.
 - [x] Live User Feed activities.
+- [x] Users can make Video Chatting room and can communicate with individual or with a group.
 & many more..
 ### - Impress us with some more innovative and exciting features not included above[30 points]
 ### Innovative (work for this two days) 

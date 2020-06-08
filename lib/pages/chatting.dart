@@ -11,6 +11,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+//appBar:AppBar(),
 //      appBar: header(context,titleText: "Messanging"),
       body:
 //      Container(),);

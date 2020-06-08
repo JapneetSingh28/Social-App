@@ -18,6 +18,9 @@ Build a social platform for Precisely’s users
 - [x] Users can search posts by tags[10 points ](almost done)
 - [x] Users can see other users’ profiles and all their previous posts[10 points ]
 - [x] Recommend more tags or people to follow based on users’ existing preferences and followings[20 points ]
+- [x] Users can chat with the other users.
+- [x] Live User Feed activities.
+& many more..
 ### - Impress us with some more innovative and exciting features not included above[30 points]
 ### Innovative (work for this two days) 
 
